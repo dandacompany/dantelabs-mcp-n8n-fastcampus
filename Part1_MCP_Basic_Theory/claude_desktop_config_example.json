@@ -1,0 +1,97 @@
+{
+    "mcpServers": {
+        "Context7": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@upstash/context7-mcp"
+            ]
+        },
+        "EXA": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "https://mcp.exa.ai/mcp?exaApiKey=[YOUR_EXA_API_KEY]"
+            ]
+        },
+        "Memory": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-memory"
+            ],
+            "env": {
+                "MEMORY_FILE_PATH": "/Users/dante/workspace/dante-code/mcps/memory.json"
+            }
+        },
+        "PPT": {
+            "command": "/your/path/to/Office-PowerPoint-MCP-Server/.venv/bin/python",
+            "args": [
+                "/your/path/to/Office-PowerPoint-MCP-Server/ppt_mcp_server.py"
+            ]
+        },
+        "Gmail": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@smithery/cli@latest",
+                "run",
+                "@shinzo-labs/gmail-mcp",
+                "--key",
+                "[YOUR_SMITHERY_API_KEY]",
+                "--profile",
+                "[YOUR_SMITHERY_PROFILE]"
+            ]
+        },
+        "DesktopCommander": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@wonderwhy-er/desktop-commander"
+            ]
+        },
+        "SequentialThinking": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        },
+        "Playwright": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ]
+        },
+        "TimeServer": {
+            "command": "uvx",
+            "args": [
+                "mcp-server-time"
+            ]
+        },
+        "TalkToFigma": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "cursor-talk-to-figma-mcp@latest"
+            ]
+        },
+        "YouTube MCP Server": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@smithery/cli@latest",
+                "run",
+                "@icraft2170/youtube-data-mcp-server",
+                "--key",
+                "[YOUR_SMITHERY_API_KEY]",
+                "--profile",
+                "[YOUR_SMITHERY_PROFILE]"
+            ],
+            "env": {}
+        }
+    },
+    "isUsingBuiltInNodeForMcp": false
+}

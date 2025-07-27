@@ -26,7 +26,7 @@
 
 - 강의 수강생은 누구나 자유롭게 자료를 활용할 수 있습니다.
 - 실습 자료는 강의 커리큘럼 및 영상 공개 일정에 따라 추가/수정될 수 있습니다.
-- 강의 및 레포지토리 관련 문의는 [패스트캠퍼스 고객센터](mailto:help@fastcampus.co.kr) 또는 [단테랩스](mailto:datapod.k@gmail.com)를 이용해 주세요.
+- 강의 및 레포지토리 관련 문의는 [패스트캠퍼스 고객센터](mailto:help@fastcampus.co.kr) 또는 [단테랩스 디스코드 서버](https://discord.gg/hMfgybcTJQ)를 이용해 주세요.
 
 ---
 
