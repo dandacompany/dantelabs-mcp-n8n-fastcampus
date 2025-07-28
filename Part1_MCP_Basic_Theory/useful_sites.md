@@ -45,6 +45,7 @@
 
 - [패스트캠퍼스 고객센터](mailto:help@fastcampus.co.kr)
 - [단테랩스 디스코드 서버](https://discord.gg/hMfgybcTJQ)
+- [Reddit MCP 커뮤니티](https://www.reddit.com/r/mcp/)
 - [공식 N8N 디스코드 서버](https://discord.gg/n8n)
 - [공식 n8n 커뮤니티 사이트](https://community.n8n.io)
 

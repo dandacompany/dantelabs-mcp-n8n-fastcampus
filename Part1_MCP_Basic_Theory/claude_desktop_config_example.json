@@ -7,6 +7,10 @@
                 "@upstash/context7-mcp"
             ]
         },
+        "DuckDuckGo": {
+            "command": "uvx",
+            "args": ["duckduckgo-mcp-server"]
+        },
         "EXA": {
             "command": "npx",
             "args": [
@@ -31,6 +35,14 @@
                 "/your/path/to/Office-PowerPoint-MCP-Server/ppt_mcp_server.py"
             ]
         },
+        "Word": {
+            "command": "uvx",
+            "args": [
+                "--from",
+                "office-word-mcp-server",
+                "word_mcp_server"
+            ]
+        },
         "Gmail": {
             "command": "npx",
             "args": [
@@ -43,6 +55,17 @@
                 "--profile",
                 "[YOUR_SMITHERY_PROFILE]"
             ]
+        },
+        "GoogleWorkspace": {
+            "command": "node",
+            "args": [
+                "/path/to/google-workspace-server/build/index.js"
+            ],
+            "env": {
+                "GOOGLE_CLIENT_ID": "[YOUR_GOOGLE_CLIENT_ID]",
+                "GOOGLE_CLIENT_SECRET": "[YOUR_GOOGLE_CLIENT_SECRET]",
+                "GOOGLE_REFRESH_TOKEN": "[YOUR_GOOGLE_REFRESH_TOKEN]"
+            }
         },
         "DesktopCommander": {
             "command": "npx",
@@ -70,6 +93,26 @@
                 "mcp-server-time"
             ]
         },
+        "NaverSearch": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@isnow890/naver-search-mcp"
+            ],
+            "env": {
+                "NAVER_CLIENT_ID": "[YOUR_NAVER_CLIENT_ID]",
+                "NAVER_CLIENT_SECRET": "[YOUR_NAVER_CLIENT_SECRET]"
+            }
+        },
+        "Linkedin": {
+            "command": "uv",
+            "args": [
+                "--directory",
+                "/your/path/to/linkedin-mcp-server",
+                "run",
+                "main.py"
+            ]
+        },
         "TalkToFigma": {
             "command": "npx",
             "args": [
@@ -91,6 +134,27 @@
                 "[YOUR_SMITHERY_PROFILE]"
             ],
             "env": {}
+        },
+        "ImageGen": {
+            "command": "npx",
+            "args": [
+                "@gongrzhe/image-gen-server"
+            ],
+            "env": {
+                "REPLICATE_API_TOKEN": "[YOUR_REPLICATE_API_TOKEN]",
+                "MODEL": "[YOUR_MODEL]"
+            },
+            "disabled": false,
+            "autoApprove": []
+        },
+        "ElevenLabs": {
+            "command": "uvx",
+            "args": [
+                "elevenlabs-mcp"
+            ],
+            "env": {
+                "ELEVENLABS_API_KEY": "[YOUR_ELEVENLABS_API_KEY]"
+            }
         }
     },
     "isUsingBuiltInNodeForMcp": false
