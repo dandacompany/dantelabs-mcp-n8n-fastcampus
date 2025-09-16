@@ -26,7 +26,7 @@
 
 1) Dante Stock
    * Analyze Chart Image : 사용자가 제공한 주식 심볼과 study 종류 등의 파라미터를 기반으로 상세한 분석 차트 이미지를 생성한 뒤 이미지 인식 기반으로 상세 분석 결과를 생성합니다.
-   * Receive Investing.com RSS : Investing.com의 다양한 주식/경제관련 RSS 피드를 수신합니다.
+   * Receive RSS : 다양한 주식/경제관련 RSS 피드를 수신합니다.
    * Scrape Webpage : 주어진 링크의 웹페이지 문서를 읽고 텍스트 내용을 추출합니다. 뉴스기사를 확인할때 쓰게 됩니다.
    * Think : 초기에 분석 절차 계획을 수립하는 경우와, 각 단계별로 중간 진행상황과 다음 절차를 검토할때 사용합니다.
   
@@ -120,10 +120,11 @@
 ### 6.1. 단계적 도구 사용
 
 * 공통 : Think 도구를 통해 시작단계 및 중간단계의 계획수립 및 실행을 점검합니다.
-* 1단계(정량 분석) : Alphavantage MCP로 위 분석 프레임워크에 맞춰 정량분석을 먼저 진행합니다.
-* 2단계(이미지 분석) : Dante Stock MCP의 Analyze Chart Image 도구로 위 분석 내용 관련 있는 Chart의 이미지 생성 및 추가 분석을 요청합니다.
+* 1단계(정량 분석) : Alphavantage MCP로 위 분석 프레임워크에 맞춰 정량분석을 먼저 진행합니다. time_peroid 를 지정하여 1년 이내의 데이터만 요청합니다.
+* 2단계(이미지 분석) : Dante Stock MCP의 Analyze Chart Image 도구로 위 분석 내용 관련 있는 Chart의 이미지 생성 및 추가 분석을 요청합니다. 차트 이미지 분석은 2개까지만 진행합니다.
 * 3단계(정성 분석) : Dante Stock MCP의 Receive investing.com RSS 도구와 Scrape Webpage 도구로 사용자 요청과 관련된 아티클을 수집 및 분석합니다.
 * 4단계(종합 분석) : 1,2,3단게를 통해 분석된 내용을 기반으로 첨부된 html 레포트 템플릿의 디자인과 스타일 테마를 사용해서 A4 2장 분량의 분석 보고서를 생성합니다. 
+  
 
 ### 6.2. 종합 데이터 분석
 

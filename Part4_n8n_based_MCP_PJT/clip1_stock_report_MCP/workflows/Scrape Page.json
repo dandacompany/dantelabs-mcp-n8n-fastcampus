@@ -45,18 +45,51 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.url }}",
-        "options": {}
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "url"
+            }
+          ]
+        }
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
       "position": [
-        400,
+        192,
         256
       ],
-      "id": "8dc1e3ba-57d0-4f8c-8179-8476ffda108c",
-      "name": "Scrape Page",
-      "onError": "continueErrorOutput"
+      "id": "3cbf08d7-47bd-46f3-b24a-82842d2ceedb",
+      "name": "Parameters"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "16e65160-34a1-4d07-bd0d-5c6b8cb45b3d",
+              "name": "textContent",
+              "value": "={{ $json.data.markdown }}",
+              "type": "string"
+            },
+            {
+              "id": "8950b216-65df-4ddd-afc6-af2196b33135",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        816,
+        464
+      ],
+      "id": "754f8ecd-7d5e-4037-bdae-787aee70ae65",
+      "name": "Text Content1"
     },
     {
       "parameters": {
@@ -81,30 +114,67 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        624,
-        432
+        816,
+        672
       ],
       "id": "686fe17d-4d28-410e-8433-7e57651ccedb",
       "name": "Error"
     },
     {
       "parameters": {
-        "workflowInputs": {
-          "values": [
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v2/scrape",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
             {
-              "name": "url"
+              "name": "Authorization",
+              "value": "Bearer $FIRECRAWL_API_KEY"
             }
           ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": \"{{ $('Parameters').item.json.url }}\",\n  \"formats\": [\n    \"markdown\"\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        624,
+        464
+      ],
+      "id": "30fa2e21-7477-4f9b-ad42-d58e9159e142",
+      "name": "Firecrawl",
+      "executeOnce": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "XNYinjBuIa06D0sU",
+          "name": "Pexels Auth"
+        },
+        "httpBearerAuth": {
+          "id": "aaHrmWm5jH3bQsnZ",
+          "name": "FireCrawl Bearer Auth"
         }
       },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        192,
+        400,
         256
       ],
-      "id": "3cbf08d7-47bd-46f3-b24a-82842d2ceedb",
-      "name": "Parameters"
+      "id": "8dc1e3ba-57d0-4f8c-8179-8476ffda108c",
+      "name": "Http Request",
+      "onError": "continueErrorOutput"
     }
   ],
   "connections": {
@@ -119,11 +189,22 @@
         ]
       ]
     },
-    "Scrape Page": {
+    "Parameters": {
       "main": [
         [
           {
-            "node": "WebpageContentExtractor",
+            "node": "Http Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Firecrawl": {
+      "main": [
+        [
+          {
+            "node": "Text Content1",
             "type": "main",
             "index": 0
           }
@@ -137,11 +218,18 @@
         ]
       ]
     },
-    "Parameters": {
+    "Http Request": {
       "main": [
         [
           {
-            "node": "Scrape Page",
+            "node": "WebpageContentExtractor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Firecrawl",
             "type": "main",
             "index": 0
           }
@@ -149,8 +237,15 @@
       ]
     }
   },
-  "pinData": {},
+  "pinData": {
+    "Parameters": [
+      {
+        "url": "https://kr.investing.com/news/forex-news/article-1633091"
+      }
+    ]
+  },
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
   }
 }
