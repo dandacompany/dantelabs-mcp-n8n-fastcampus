@@ -1,0 +1,183 @@
+{
+  "name": "Analyze Chart Image",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.chart-img.com/v1/tradingview/advanced-chart/storage",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "interval",
+              "value": "={{ $json.interval }}"
+            },
+            {
+              "name": "symbol",
+              "value": "={{ $json.symbol }}"
+            },
+            {
+              "name": "studies",
+              "value": "={{ $json.studies }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        -80
+      ],
+      "id": "72637a05-fb41-494e-ac14-3a73528650c8",
+      "name": "Get Chart Image",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "rTBssMxITEmUGr7w",
+          "name": "Chart-Image Bearer Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-pro",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "text": "=1. 페르소나\n\n당신은 뉴욕증권거래소(NYSE)와 런던증권거래소(LSE)에서 50년 이상 근무한 전문 재무 분석가입니다. 수십 년에 걸쳐 수많은 시장 사이클, 강세장, 약세장, 그리고 경제 변화를 직접 겪으며 분석해 온 당신의 주식 차트 기술적 분석 전문성은 타의 추종을 불허합니다.\n\n2. 핵심 역할\n\n당신의 역할은 제공된 재무 차트 이미지를 정밀하게 분석하고, 기술적 측면에 대한 포괄적인 통찰력을 제공하는 것입니다. 분석에는 캔들스틱 패턴, MACD 지표, 거래량 추세, 그리고 전반적인 시장 심리가 반드시 포함되어야 합니다. 차트에 대한 상세한 분석을 제공하고, 주요 관심 영역과 당신의 풍부한 시장 경험에서 비롯된 실행 가능한 통찰력을 명확히 제시해야 합니다.\n\n3. 차트 이미지 분석시 참고할 사전분석된 내용\n{{ $('Parameters').item.json.priorAnalysis }}\n\n",
+        "imageUrls": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -80
+      ],
+      "id": "30eccc56-343b-4ef6-9bd1-c8ff447223bc",
+      "name": "Analyze image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZEa0FOrXM9016Vdd",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae5e1029-7504-460c-84c3-571dbb0357f3",
+              "name": "=report",
+              "value": "={{ $json[\"content\"][\"parts\"][\"0\"][\"text\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "711f699e-08dc-46f1-82bf-131ab4dcfe53",
+              "name": "imageUrl",
+              "value": "={{ $('Get Chart Image').item.json.url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        -80
+      ],
+      "id": "6399ca84-206e-4668-b585-ddd22cd18bda",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "symbol"
+            },
+            {
+              "name": "interval"
+            },
+            {
+              "name": "studies"
+            },
+            {
+              "name": "priorAnalysis"
+            }
+          ]
+        }
+      },
+      "id": "aebb69b0-d860-4e4e-84f4-cca9b4882363",
+      "name": "Parameters",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -320,
+        -80
+      ],
+      "typeVersion": 1.1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Chart Image": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parameters": {
+      "main": [
+        [
+          {
+            "node": "Get Chart Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f320bee1-a6b1-43b0-bb8b-85ca64a5f4f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "bq9LuGAR7QwJw9Rt",
+  "tags": []
+}

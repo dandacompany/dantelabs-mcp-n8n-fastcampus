@@ -1,0 +1,46 @@
+{
+    "mcpServers": {
+        "Playwright": {
+            "command": "npx",
+            "args": [
+                "@playwright/mcp@latest"
+            ]
+        },
+        "DesktopCommander": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@wonderwhy-er/desktop-commander"
+            ]
+        },
+        "SequentialThinking": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        },
+        "Alpha Vantage": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "https://mcp.alphavantage.co/mcp?apikey=4ATT1ULIVWZOWTMG"
+            ]
+        },
+        "Dante Stock": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "http://localhost:5678/mcp/stock",
+                "--header",
+                "Authorization: Bearer ${MY_N8N_AUTH_TOKEN}"
+            ],
+            "env": {
+                "MY_N8N_AUTH_TOKEN": "xxxxxxxxxxxxxxxxx"
+            }
+        }
+    },
+    "isUsingBuiltInNodeForMcp": false
+}

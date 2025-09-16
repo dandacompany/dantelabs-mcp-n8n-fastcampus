@@ -1,0 +1,120 @@
+{
+  "name": "Scrape Page",
+  "nodes": [
+    {
+      "parameters": {
+        "html": "={{ $json.data }}"
+      },
+      "type": "n8n-nodes-webpage-content-extractor.webpageContentExtractor",
+      "typeVersion": 1,
+      "position": [
+        608,
+        256
+      ],
+      "id": "82981d84-a8bc-42e2-a7b9-7b4b0bfc9edc",
+      "name": "WebpageContentExtractor"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "16e65160-34a1-4d07-bd0d-5c6b8cb45b3d",
+              "name": "textContent",
+              "value": "={{ $json.textContent }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        816,
+        256
+      ],
+      "id": "df10dca1-7077-47a3-b130-610d87541ff9",
+      "name": "Text Content"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        256
+      ],
+      "id": "8dc1e3ba-57d0-4f8c-8179-8476ffda108c",
+      "name": "Scrape Page"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "url"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        192,
+        256
+      ],
+      "id": "3cbf08d7-47bd-46f3-b24a-82842d2ceedb",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WebpageContentExtractor": {
+      "main": [
+        [
+          {
+            "node": "Text Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape Page": {
+      "main": [
+        [
+          {
+            "node": "WebpageContentExtractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Scrape Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "99a29e2e-dde3-4b9c-a488-392a8562cc6c",
+  "meta": {
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "ME87mJIsJhUVs9dq",
+  "tags": []
+}

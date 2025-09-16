@@ -1,0 +1,275 @@
+{
+  "name": "Basic Practice2",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "topPosts",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -192
+      ],
+      "id": "422a9025-6713-4393-ad9e-471ba950e5c8",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "formTitle": "인스타그램 포스트 수집기",
+        "formDescription": "인스타그램 해시태그로 검색해서 인기 포스트를 엑셀 파일로 수집합니다.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "hashtag",
+              "placeholder": "해시태그",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": ""
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -384,
+        -192
+      ],
+      "id": "e0284b9e-5872-4264-9963-9a98c7cf97a8",
+      "name": "On form submission",
+      "webhookId": "bde1fe91-3b16-47cc-8028-128b53f81577"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileName": "={{ $('On form submission').item.json.hashtag}}",
+        "fileColumns": [
+          "hashtags",
+          "url",
+          "displayUrl",
+          "videoUrl",
+          "likesCount",
+          "videoPlayCount",
+          "igPlayCount",
+          "reshareCount",
+          "timestamp"
+        ]
+      },
+      "type": "n8n-nodes-excel.excel",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        -400
+      ],
+      "id": "f54aaaad-4f4f-45b2-b55a-2954d0739767",
+      "name": "Create file"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "download",
+        "fileName": "={{ $('On form submission').item.json.hashtag }}.xlsx"
+      },
+      "type": "n8n-nodes-excel.excel",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        64
+      ],
+      "id": "de3d8b06-06a1-4e69-a273-ee56e7f39826",
+      "name": "Download file"
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1DAfzAUuj2YgFIuFOZvUXwrHdxHEFUywB",
+          "mode": "list",
+          "cachedResultName": "FastCampus",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1DAfzAUuj2YgFIuFOZvUXwrHdxHEFUywB"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        48,
+        64
+      ],
+      "id": "1749a0b0-58ec-40a0-97d0-9125a42e7ac7",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "N8Rf0BdY5jAfIdzv",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addRow",
+        "fileName": "={{ $('On form submission').item.json.hashtag}}.xlsx",
+        "rowData": {
+          "entries": [
+            {
+              "column": "hashtags",
+              "value": "={{ $json.hashtags.join() }}"
+            },
+            {
+              "column": "url",
+              "value": "={{ $json.url }}"
+            },
+            {
+              "column": "displayUrl",
+              "value": "={{ $json.displayUrl }}"
+            },
+            {
+              "column": "videoUrl",
+              "value": "={{ $json.videoUrl }}"
+            },
+            {
+              "column": "videoPlayCount",
+              "value": "={{ $json.videoPlayCount }}"
+            },
+            {
+              "column": "igPlayCount",
+              "value": "={{ $json.igPlayCount }}"
+            },
+            {
+              "column": "reshareCount",
+              "value": "={{ $json.reshareCount }}"
+            },
+            {
+              "column": "timestamp",
+              "value": "={{ (new Date($json.timestamp)).format('yyyy-MM-dd HH:mm:ss') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-excel.excel",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -192
+      ],
+      "id": "b61a4c72-b7a1-4181-bece-6e2dbf364f25",
+      "name": "AddRow data"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/apify~instagram-scraper/run-sync-get-dataset-items?token=xxxxxxxxxx",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"addParentData\": false,\n  \"enhanceUserSearchWithFacebookPage\": false,\n  \"isUserReelFeedURL\": false,\n  \"isUserTaggedFeedURL\": false,\n  \"onlyPostsNewerThan\": \"2025-08-09\",\n  \"resultsLimit\": 10,\n  \"resultsType\": \"posts\",\n  \"search\": \"kpop\",\n  \"searchLimit\": 1,\n  \"searchType\": \"hashtag\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        -192
+      ],
+      "id": "fb6ab9fd-fb7a-4a8c-8f83-b31acfa63fc9",
+      "name": "Apify Scraper"
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "hashtag": "n8n",
+          "submittedAt": "2025-08-11T08:24:17.450+09:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Apify Scraper",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "AddRow data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AddRow data": {
+      "main": [
+        []
+      ]
+    },
+    "Apify Scraper": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a2c42781-bafa-49ed-94c9-cfedef3c1458",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1d2666320bb19d8da8975c9b1013bd7bdad6e0bf91ffe1acdc74e48c3285fb2f"
+  },
+  "id": "udmOAotrnnYVBfJW",
+  "tags": []
+}

@@ -1,0 +1,312 @@
+{
+  "name": "Basic Practice1",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "36fb3a1e-2089-480e-9bee-6600d946794f",
+      "name": "Daily Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        32
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://techcrunch.com/artificial-intelligence/feed/",
+        "options": {}
+      },
+      "id": "16adb62e-d7e0-4136-ab9a-167916d0f894",
+      "name": "RSS Feed Read",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        192
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08HDQJCQ0J",
+          "mode": "list",
+          "cachedResultName": "업무자동화"
+        },
+        "text": "={{ $json.output.text }}",
+        "otherOptions": {}
+      },
+      "id": "2ea6d06f-67db-4b78-b808-4c092d1632c1",
+      "name": "Send to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [
+        1424,
+        192
+      ],
+      "webhookId": "1cac14c9-ea1b-440d-9ecb-e6ed2b481a06",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "gygv32zmSBP8U5fE",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -272,
+        192
+      ],
+      "id": "12a272b7-6910-4197-8fc1-0c0525d55073",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.link }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        400,
+        192
+      ],
+      "id": "58579c07-aaf2-4ec7-aba7-5222c87cdc10",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "content",
+              "cssSelector": "div.entry-content.wp-block-post-content.is-layout-constrained.wp-block-post-content-is-layout-constrained"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        192
+      ],
+      "id": "9230b954-91c8-4e5a-bdc1-06010b6acccc",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "maxItems": 2
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        160,
+        192
+      ],
+      "id": "121b7de7-a407-4085-a883-2a852430c2d9",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "options": {
+          "summarizationMethodAndPrompts": {
+            "values": {
+              "combineMapPrompt": "Write a concise summary of the following:\n\n\n\"{text}\"\n\n\nCONCISE SUMMARY: ",
+              "prompt": "# 작성 지침\n아래 내용을 요약형식에 맞춰서 한글로 5개의 뉴스기사로 요약해서 작성해줘.\n친구한테 친근하게 이야기 하는 문체로 작성해줘.\n\n\"{text}\"\n\n# 요약 형식(하단 기재)\n\n*단테 AI뉴스봇* ({{ $now.format('yyyy-MM-dd') }})\n*1. 제목*\n(200자 내외 요약내용..)\n\n*2. 제목*\n(200자 내외 요약내용..)\n...\n\n\n"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2.1,
+      "position": [
+        1072,
+        192
+      ],
+      "id": "37d1671f-d799-4b03-908e-1902850fe338",
+      "name": "Summarization Chain"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-5-nano",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        384
+      ],
+      "id": "8d8ff2a2-047d-45e9-b688-f1adb02936ea",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "IstxAvtJ1xbwBhzi",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "content"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        832,
+        192
+      ],
+      "id": "cb679609-d84f-47de-b293-8655acb015f1",
+      "name": "Aggregate1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Feed Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to Slack": {
+      "main": [
+        []
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "RSS Feed Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarization Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarization Chain": {
+      "main": [
+        [
+          {
+            "node": "Send to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Summarization Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "116929b6-0492-42b8-9077-51819eb9bd2f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1d2666320bb19d8da8975c9b1013bd7bdad6e0bf91ffe1acdc74e48c3285fb2f"
+  },
+  "id": "ydofZLnjsJml7r1b",
+  "tags": []
+}

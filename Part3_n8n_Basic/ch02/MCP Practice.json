@@ -1,0 +1,735 @@
+{
+  "name": "MCP Practice",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# 개요\n너는 도서 정보를 수집해서 DB에 저장하고 하고 분석하는 데이터베이스 전문가이자 데이터분석 어시스턴트야.\n너의 역할은 사용자에 요청에 따라서,\n도서 정보를 수집하거나,\n데이터베이스에 접속하여, 테이블을 생성, 삭제, 수정하고, 데이터를 추가, 수정, 삭제, 조회 하여\n데이터 구성 및 분석을 하여 그 결과를 보고해야되.\nMCP 도구와 Think 도구를 적절하게 순차적으로 사용해야 되.\nSupabase MCP Tool을 사용하기 전에 Context7 MCP Tool로 SQL 문법을 반드시 확인할 것.\n\n# 사용해야할 도구\n- Think Tool : 다음의 상황에서 사용해야함 (작업을 수행하기 전에 계획을 세울때, 진행과정을 점검하기 위해 단계마다, 복잡한 작업을 할때)\n- Supabase MCP Tool : Supabase (Postgresql) DB에 접속해서 각종 데이터베이스 제어 명령을 할때 사용\n- Context7 MCP Tool : PostgreSQL 문법을 확인하여 정확한 쿼리를 작성하기 위해 관련 문서를 참조하기 위해 사용.\n- Book Scraper Tool : 교보문고 온라인 일간 베스트 도서정보를 수집하기 위해 사용 (파라미터: page 번호)",
+          "maxIterations": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -16
+      ],
+      "id": "d0daedab-3546-41cf-ae30-0630ed421322",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        208
+      ],
+      "id": "b8eee103-a207-4f07-9365-ab3d83c89bff",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        336,
+        208
+      ],
+      "id": "2cd76ba1-5fa8-4c28-ac9e-3d27809f1065",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "IstxAvtJ1xbwBhzi",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        816,
+        208
+      ],
+      "id": "d5ae31dc-1982-4bae-885e-38aae7c8db7a",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://server.smithery.ai/@supabase-community/supabase-mcp/mcp?api_key=d1b6b259-b2f7-45ed-8774-cf8d5ea75046&profile=crowded-mosquito-ykHWfz",
+        "serverTransport": "httpStreamable"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        208
+      ],
+      "id": "6034775a-e1ff-4ffc-b840-297e4c19cbc5",
+      "name": "Supabase MCP Tool"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://server.smithery.ai/@upstash/context7-mcp/mcp?api_key=d1b6b259-b2f7-45ed-8774-cf8d5ea75046&profile=crowded-mosquito-ykHWfz",
+        "serverTransport": "httpStreamable"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        368
+      ],
+      "id": "5d02eded-323b-4bc0-81b0-1b3df296d533",
+      "name": "Context7 MCP Tool"
+    },
+    {
+      "parameters": {
+        "content": "## MCP Client 사용 예시",
+        "height": 672,
+        "width": 944
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "4da2bc58-ddb3-493b-b8c5-a73a5cfd937e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "toolDescription": "교보문고 온라인 일간 베스트 서적 정보를 수집하는 도구",
+        "url": "https://store.kyobobook.co.kr/api/gw/best/best-seller/online",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', `Number (e.g. 1 or 2, ...)`, 'string') }}"
+            },
+            {
+              "name": "per",
+              "value": "20"
+            },
+            {
+              "name": "period",
+              "value": "001"
+            },
+            {
+              "name": "dsplDvsnCode",
+              "value": "000"
+            },
+            {
+              "name": "dsplTrgtDvsnCode",
+              "value": "001"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "ko,en-US;q=0.9,en;q=0.8"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Referer",
+              "value": "https://store.kyobobook.co.kr/bestseller/online/daily"
+            },
+            {
+              "name": "Sec-Fetch-Dest",
+              "value": "empty"
+            },
+            {
+              "name": "Sec-Fetch-Mode",
+              "value": "cors"
+            },
+            {
+              "name": "Sec-Fetch-Site",
+              "value": "same-origin"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"macOS\""
+            },
+            {
+              "name": "sec-ch-ua-platform-version",
+              "value": "\"15.6.0\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        816,
+        368
+      ],
+      "id": "735fd7d2-90dc-47d0-a43e-fd0db3fe7dcc",
+      "name": "Book Scraper Tool"
+    },
+    {
+      "parameters": {
+        "path": "fbf00588-cd62-459d-a672-f78aded5d7e2"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        416,
+        1136
+      ],
+      "id": "f9da88d1-3f68-4d60-b0ff-7a2dbede0a5d",
+      "name": "MCP Server Trigger",
+      "webhookId": "fbf00588-cd62-459d-a672-f78aded5d7e2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "pageNo",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "fcea59d8-5b81-463d-9867-e19c7d97274f",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        208,
+        1344
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "url": "https://store.kyobobook.co.kr/api/gw/best/best-seller/online",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "={{ $json.pageNo }}"
+            },
+            {
+              "name": "per",
+              "value": "20"
+            },
+            {
+              "name": "period",
+              "value": "001"
+            },
+            {
+              "name": "dsplDvsnCode",
+              "value": "000"
+            },
+            {
+              "name": "dsplTrgtDvsnCode",
+              "value": "001"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "*/*"
+            },
+            {
+              "name": "Accept-Language",
+              "value": "ko,en-US;q=0.9,en;q=0.8"
+            },
+            {
+              "name": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "name": "Referer",
+              "value": "https://store.kyobobook.co.kr/bestseller/online/daily"
+            },
+            {
+              "name": "Sec-Fetch-Dest",
+              "value": "empty"
+            },
+            {
+              "name": "Sec-Fetch-Mode",
+              "value": "cors"
+            },
+            {
+              "name": "Sec-Fetch-Site",
+              "value": "same-origin"
+            },
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            },
+            {
+              "name": "sec-ch-ua",
+              "value": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\""
+            },
+            {
+              "name": "sec-ch-ua-mobile",
+              "value": "?0"
+            },
+            {
+              "name": "sec-ch-ua-platform",
+              "value": "\"macOS\""
+            },
+            {
+              "name": "sec-ch-ua-platform-version",
+              "value": "\"15.6.0\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        1344
+      ],
+      "id": "e6527ab0-19e5-46b4-9ac3-92ecf7aa9d87",
+      "name": "HTTP Request",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "tableId": "books",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "title",
+              "fieldValue": "={{ $json.cmdtName }}"
+            },
+            {
+              "fieldId": "author",
+              "fieldValue": "={{ $json.chrcName }}"
+            },
+            {
+              "fieldId": "publisher",
+              "fieldValue": "={{ $json.pbcmName }}"
+            },
+            {
+              "fieldId": "price",
+              "fieldValue": "={{ $json.price }}"
+            },
+            {
+              "fieldId": "publication_date",
+              "fieldValue": "={{ $json.rlseDate }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        832,
+        1344
+      ],
+      "id": "6c93120e-afd9-4a6e-8e8f-3fbbe4df89b0",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "DH7tsoaoLBqDz9GY",
+          "name": "Supabase account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data.bestSeller",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        624,
+        1344
+      ],
+      "id": "b70bfdd9-2990-4e12-988b-949f96607026",
+      "name": "Split Out",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "description": "Supabase DB에 교보문고 온라인 베스트 도서의 특정 페이지 도서 정보 목록을 저장하는 도구",
+        "workflowId": {
+          "__rl": true,
+          "value": "IdTTyGqkXjcPgrBi",
+          "mode": "list",
+          "cachedResultName": "MCP 실습(완성본)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "pageNo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('pageNo', `number(integer) e.g) 1 or 2 or over`, 'number') }}"
+          },
+          "matchingColumns": [
+            "pageNo"
+          ],
+          "schema": [
+            {
+              "id": "pageNo",
+              "displayName": "pageNo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        1152
+      ],
+      "id": "d011abc8-76bd-4753-99c7-92bc3a552e1f",
+      "name": "Save Kyobo Books",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        960
+      ],
+      "id": "4c168eba-8b8c-43b0-b6b3-13f57c7fbd23",
+      "name": "Simple Memory1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        304,
+        960
+      ],
+      "id": "70d25dda-5072-48d8-85ae-a5d75b1d1517",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "IstxAvtJ1xbwBhzi",
+          "name": "OpenRouter account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        592,
+        960
+      ],
+      "id": "96276c92-b9ca-409d-8d1c-3f804d63efdc",
+      "name": "Think1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# 개요\n너는 도서 정보를 수집해서 DB에 저장하고 하고 분석하는 데이터베이스 전문가이자 데이터분석 어시스턴트야.\n너의 역할은 사용자에 요청에 따라서, 교보문고 온라인 일간베스트 도서정보를 특정 페이지 데이터를 수집하여 데이터베이스 저장해야 되.\nMCP 도구와 Think 도구를 적절하게 순차적으로 사용해야 되.\n\n# 사용해야할 도구\n- Think Tool : 다음의 상황에서 사용해야함 (작업을 수행하기 전에 계획을 세울때, 진행과정을 점검하기 위해 단계마다, 복잡한 작업을 할때)\n- Book Scraper Tool : 교보문고 온라인 일간 베스트 도서정보를 수집하기 위해 사용 (파라미터: page 번호)",
+          "maxIterations": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        736
+      ],
+      "id": "96ef7dae-0e7e-478c-b46f-e08f03df365f",
+      "name": "AI Agent1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n.dante-datalab.com/mcp/fbf00588-cd62-459d-a672-f78aded5d7e2",
+        "serverTransport": "httpStreamable"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        960
+      ],
+      "id": "c17c7e8e-4104-4df6-aa9f-9b49f81d5efc",
+      "name": "Book Scraper Tool1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## MCP Server 사용예시",
+        "height": 880,
+        "width": 944
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        80,
+        656
+      ],
+      "typeVersion": 1,
+      "id": "92767bac-ae1d-46b2-b8fb-cc7ab823d475",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        192
+      ],
+      "id": "64dea2e6-92e3-4050-b676-97ef5699c42a",
+      "name": "When chat message received",
+      "webhookId": "7e02e6bf-6fa1-4ad6-a9ea-56179e9bb04f"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "pageNo": 1
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase MCP Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Context7 MCP Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Book Scraper Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Kyobo Books": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Book Scraper Tool1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e0ca1496-24c2-4083-b712-318120d64faf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1d2666320bb19d8da8975c9b1013bd7bdad6e0bf91ffe1acdc74e48c3285fb2f"
+  },
+  "id": "IdTTyGqkXjcPgrBi",
+  "tags": []
+}

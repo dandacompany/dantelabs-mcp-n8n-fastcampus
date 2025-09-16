@@ -1,0 +1,883 @@
+{
+  "name": "Multi Agent Practice",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -272,
+        -128
+      ],
+      "id": "91ad0b8b-b2d2-4d56-a5f5-10c668884712",
+      "name": "When chat message received",
+      "webhookId": "83178e75-3a70-450d-910b-3f3a1eedd8d0"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        112
+      ],
+      "id": "cd5c9f38-d484-44ec-8018-d9620c25f263",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "IstxAvtJ1xbwBhzi",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        112
+      ],
+      "id": "f02e8ea6-1d33-4789-8192-f1c68ed77b27",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        112,
+        112
+      ],
+      "id": "005fd11e-0b4a-4ebb-b79c-aff6d63b1a1a",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        256,
+        112
+      ],
+      "id": "76e0fdf9-66a9-4d70-b3df-8dd9cc66aa95",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        560
+      ],
+      "id": "ccf843de-62aa-4372-9d84-34463e15da72",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "IstxAvtJ1xbwBhzi",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message_ID', `답장 보낼 대상 이메일 메세지 ID`, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `html문자열로 작성된 이메일 본문`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -480,
+        720
+      ],
+      "id": "74cd8ec4-99a1-40b0-bb97-c5400aaadf11",
+      "name": "Reply",
+      "webhookId": "8efff97e-01ae-4198-894d-542379fce027",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oM7OsumbT52ZpjeT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', `수신자 이메일 주소`, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', `이메일 제목 (형식: [글머리 단어] 이메일 제목, 예시: [문의] 프로젝트 다음 미팅 날짜 및 안건 )`, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `html문자열로 작성된 이메일 본문`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        560
+      ],
+      "id": "3e2e0858-53f5-4790-bb16-a3c878309bb5",
+      "name": "Send",
+      "webhookId": "9ff4db97-1a33-455e-80bd-b7cd429a96c4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oM7OsumbT52ZpjeT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message_ID', `이메일 메세지 ID`, 'string') }}"
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        720
+      ],
+      "id": "76bcdf88-8000-433e-b1db-a8d8430e30e4",
+      "name": "View",
+      "webhookId": "8efff97e-01ae-4198-894d-542379fce027",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oM7OsumbT52ZpjeT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', `이메일 제목 (형식: [글머리 단어] 이메일 제목, 예시: [문의] 프로젝트 다음 미팅 날짜 및 안건 )`, 'string') }}",
+        "emailType": "html",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `html문자열로 작성된 이메일 본문`, 'string') }}",
+        "options": {
+          "threadId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Thread_ID', `이메일 스레드 ID`, 'string') }}",
+          "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To_Email', `수신자 이메일 주소`, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        720
+      ],
+      "id": "b5c59b38-edb5-4857-a94d-e4226bbb121a",
+      "name": "Draft",
+      "webhookId": "8efff97e-01ae-4198-894d-542379fce027",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oM7OsumbT52ZpjeT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search', `이메일 검색어`, 'string') }}",
+          "receivedAfter": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Received_After', `기준 날짜 이후 이메일만 조회하도록 필터링`, 'string') }}",
+          "sender": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Sender', `보낸 사람만 조회하도록 필터링`, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        560
+      ],
+      "id": "f2b6255f-c72b-492f-a6ad-df73911a260a",
+      "name": "List",
+      "webhookId": "8efff97e-01ae-4198-894d-542379fce027",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oM7OsumbT52ZpjeT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 이메일 에이전트",
+        "height": 560,
+        "width": 768
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -544,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "cd6a298e-e2ca-4317-8d96-5a2ba8d97af8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## 스케줄 에이전트",
+        "height": 560,
+        "width": 512
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        256,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "221dec00-d560-4239-81f3-dca1a78a4438",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "model": "google/gemini-2.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        352,
+        560
+      ],
+      "id": "d3240b70-a45c-45fd-9c4d-7486885cc900",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "IstxAvtJ1xbwBhzi",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "calendar": {
+          "__rl": true,
+          "value": "datapod.k@gmail.com",
+          "mode": "list",
+          "cachedResultName": "단테랩스 스케줄"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', ``, 'string') }}",
+        "updateFields": {
+          "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `시작 일자 (e.g. 2025-08-11 00:00:00)`, 'string') }}",
+          "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', `종료 일자 (e.g. 2025-08-18 00:00:00)`, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        560
+      ],
+      "id": "3895b9bc-5575-4ee8-ac3c-70c69467e24a",
+      "name": "Update",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OFaaQIaWjqbIl0LY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "calendar": {
+          "__rl": true,
+          "value": "datapod.k@gmail.com",
+          "mode": "list",
+          "cachedResultName": "단테랩스 스케줄"
+        },
+        "eventId": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_ID', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        608,
+        560
+      ],
+      "id": "b6359041-e062-4254-a358-8ebdd0c9bcdc",
+      "name": "Delete",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OFaaQIaWjqbIl0LY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "datapod.k@gmail.com",
+          "mode": "list",
+          "cachedResultName": "단테랩스 스케줄"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', `스케줄 시작일자 (e.g. 2025-08-11 00:00:00)`, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', `스케줄 종료일자(e.g. 2025-08-11  00:00:00)`, 'string') }}",
+        "additionalFields": {
+          "attendees": [],
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        480,
+        704
+      ],
+      "id": "f52811f5-a667-4273-a667-328b8f1bb46e",
+      "name": "Create",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OFaaQIaWjqbIl0LY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileName": "contacts",
+        "fileColumns": [
+          "name",
+          "email",
+          "comments"
+        ]
+      },
+      "type": "n8n-nodes-excel.excel",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        352
+      ],
+      "id": "af514330-3941-488e-a3bd-ec38fe18cc70",
+      "name": "Create contact excel file"
+    },
+    {
+      "parameters": {
+        "descriptionType": "auto",
+        "resource": "data",
+        "operation": "read",
+        "fileName": "contacts.xlsx",
+        "sheetName": "Sheet1",
+        "limit": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Limit', `조회할 행수`, 'number') }}",
+        "filters": {},
+        "sort": {}
+      },
+      "type": "n8n-nodes-excel.excelTool",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        560
+      ],
+      "id": "d6e92e9c-47d3-4b91-8d79-4289c9afd584",
+      "name": "Read Contacts"
+    },
+    {
+      "parameters": {
+        "operation": "addRow",
+        "fileName": "contacts.xlsx",
+        "rowData": {
+          "entries": [
+            {
+              "column": "name",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('entries0_Value', `연락처 대상자 이름`, 'string') }}"
+            },
+            {
+              "column": "email",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('entries1_Value', `이메일 주소`, 'string') }}"
+            },
+            {
+              "column": "comments",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('entries2_Value', `비고, 메모`, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-excel.excelTool",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        720
+      ],
+      "id": "ef0b704c-ad0b-497a-a8df-80f356880955",
+      "name": "Append Contact"
+    },
+    {
+      "parameters": {
+        "operation": "updateRows",
+        "fileName": "contacts.xlsx",
+        "updateFilters": {
+          "conditions": [
+            {
+              "column": "name",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', `필터를 위해 Equal조건으로 매칭할 name 값`, 'string') }}"
+            }
+          ]
+        },
+        "rowData": {
+          "entries": [
+            {
+              "column": "email",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('entries0_Value', `업데이트할 Email 주소`, 'string') }}"
+            },
+            {
+              "column": "comments",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('entries1_Value', `업데이트할 메모`, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-excel.excelTool",
+      "typeVersion": 1,
+      "position": [
+        96,
+        560
+      ],
+      "id": "001255cd-7e46-40c3-a3f4-c694614a9964",
+      "name": "Update Contact"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "datapod.k@gmail.com",
+          "mode": "list",
+          "cachedResultName": "단테랩스 스케줄"
+        },
+        "timeMin": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('After', `the day before the date the user requested (e.g. 2025-08-11)`, 'string') }}",
+        "timeMax": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Before', `the day after the date the user requested (e.g. 2025-08-18)`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        352,
+        704
+      ],
+      "id": "0842b06e-3391-45a0-8701-daa8699cb8d0",
+      "name": "List Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "OFaaQIaWjqbIl0LY",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "dante의 캘린더 일정 관리 어시스턴트. 사용자의 일정에서 이벤트를 생성, 조회, 삭제하는 도구",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', `request prompt`, 'string') }}",
+        "options": {
+          "systemMessage": "# 개요\n너는 캘린더 일정 관리 어시스턴트야. \n너의 역할은 사용자의 일정에서 이벤트를 생성, 조회, 삭제하는 일이야.\n\n## 일정 관리 도구\n   - Create : 이벤트를 생성시 사용\n   - List Calendar : 일정을 조회시 사용\n   - Delete\"이벤트 삭제\"를 사용하여 이벤트를 삭제합니다. 삭제할 이벤트의 ID를 얻기 위해 먼저 \"이벤트 조회\"를 사용해야 합니다.  \n   - \"이벤트 업데이트\"를 사용하여 이벤트를 업데이트합니다. 업데이트할 이벤트의 ID를 얻기 위해 먼저 \"이벤트 조회\"를 사용해야 합니다.\n\n## 최종 주의사항\n현재 날짜/시간: {{ $now }}\n이벤트의 지속 시간이 지정되지 않은 경우 1시간으로 가정합니다."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        352,
+        368
+      ],
+      "id": "cc5ed685-8741-43cc-8da2-12989af0875d",
+      "name": "Schedule AI Agent Tool"
+    },
+    {
+      "parameters": {
+        "toolDescription": "이메일 및 연락처 관리 어시스턴트. \n사용자의 요청에 의해 1) 이메일기능(이메일 전송, 이메일 답장, 목록조회, 상세내용조회, 초안작성) 2) 연락처 기능(연락처 조회, 삭제, 수정, 추가)의 기능을 수행하는 도구",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', `request prompt`, 'string') }}",
+        "options": {
+          "systemMessage": "# 개요\n너는 이메일 및 연락처 관리 어시스턴트야.\n사용자의 요청에 의해 1) 이메일기능(이메일 전송, 이메일 답장, 목록조회, 상세내용조회, 초안작성) 2) 연락처 기능(연락처 조회, 삭제, 수정, 추가)의 기능을 수행해야해.\n모든 이메일은 전문적으로 HTML 형식으로 작성되어야 하며, \"Dante\"로 서명되어야 해.\n\n## 이메일 및 연락처 도구 목록\n   - Send : 이메일 전송\n   - Reply : 수신 메일에 대한 답변 이메일 전송\n   - Draft : 이메일 초안 작성\n   - List : 이메일 목록 검색 및 조회\n   - View : 특정 이메일 상세 내용 조회 (MessageID가 필요하므로, List 도구로 먼저 조회해야함)\n   - Read Contacts : 연락처 정보 전체를 조회\n   - Update Contact : 특정 이름의 연락처 정보를 업데이트\n   - Append Contact : 연락처 추가\n   - Delete Contact : 특정 이름의 연락처 정보 삭제\n    \n## 최종 참고 사항\n- 현재 날짜/시간: {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -416,
+        368
+      ],
+      "id": "c5c8eb38-5011-4eff-8b2b-8f8a0a1678b4",
+      "name": "Email AI Agent Tool"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=## 개요\n너는 사용자의 여러 종류의 요청을 처리하는 어시스턴트야. \n너의 역할은 사용자의 요청에 맞는 적절한 에이전트 도구로 요청을 전달하는 것이야.\n직접적으로 검색이나 추론, 작성, 요약 등의 작업을 수행하지 않고, 각 에이전트 도구가 전달해주는 결과값만을 정리해서 보고해야해.\n단순히 적절한 도구를 호출하는 작업한 필요해.\n\n## 도구\n- Think: 복합적인 여러가지 업무를 나눠서 처리해야하거나, 진행 간에 막히거나 에러가 발생하는 경우 사용\n- CurrentDateTime : 현재 날짜 및 시간을 확인하는 경우 사용\n- Email AI Agent Tool: 연락처 정보를 조회하거나 업데이트하거나 추가, 이메일과 관련된 작업 수행시 사용\n- Schedule AI Agent Tool: 캘린더 및 스케줄과 관련된 작업 수행시 사용 (반드시 CurrentDateTime로 현재일시를 확인하고 현재시간과 함께 요청 할것 )\n\n## 규칙\n- 일부 작업은 먼저 연락처 정보를 조회해야함. 다음 작업 시 이메일 주소를 조회한 뒤 해당 에이전트에 전송 할것.\n  - 이메일 전송\n  - 이메일 초안 작성\n  - 참석자를 포함한 캘린더 이벤트 생성\n\n## 세부 지침\n1) 사용자 요청에 따라 필요한 도구를 호출할 것\n2) 작업을 처리하기 전에 \"Think\" 도구를 사용하여 계획을 수립할 것.\n3) Think 도구를 이용해서 매 단계별로 올바른 단계를 수행했는지 확인할 것. 매번 호출해야함.\n\n\n## 예시\n1)\n- 입력: Dante에게 이메일 보내기: Dante에게 언제 미팅을 잡을 지 물어본다.\n  - 작업: Contact Agent를 사용하여 Dante의 이메일 주소를 가져온다\n  - 작업: Email Agent를 사용하여 이메일을 전한다. 에이전트 도구에 \"Dante에게 이메일을 보내 미팅을 잡을 날짜/시간 물어본다. 그의 이메일 주소는 [이메일 주소]입니다\"와 같은 요청문를 전달한다.\n- 출력: Dante에게 이메일이 전송되었어요. 다른 도움이 필요하세요?\n\n\n## 최종 안내\n현재 날짜/시간: {{ $now }}",
+          "maxIterations": 20
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -64,
+        -128
+      ],
+      "id": "a5b95d5e-4f67-4662-8c10-ddd7ee3c65a0",
+      "name": "Global AI Agent"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "fileName": "contacts.xlsx",
+        "deleteFilters": {
+          "conditions": [
+            {
+              "column": "name",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('conditions0_Value', `삭제할 연락처 대상자의 name`, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-excel.excelTool",
+      "typeVersion": 1,
+      "position": [
+        96,
+        720
+      ],
+      "id": "c2c295a9-8821-467a-a094-07caf5933d67",
+      "name": "Delete Contact"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}_email"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        368
+      ],
+      "id": "77ad28be-8758-463f-aeaf-1b349b419d0f",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.sessionId }}_schedule"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        368
+      ],
+      "id": "b79bd78a-62fa-404b-ab5e-2d84a2a02a2d",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "timezone": "Asia/Seoul"
+        }
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        384,
+        112
+      ],
+      "id": "28bf451f-8810-4de3-9d49-752f105ac50d",
+      "name": "CurrentDateTime"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "View": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Schedule AI Agent Tool",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Contacts": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Contact": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Contact": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update": {
+      "ai_tool": [
+        [
+          {
+            "node": "Schedule AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete": {
+      "ai_tool": [
+        [
+          {
+            "node": "Schedule AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "Schedule AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create": {
+      "ai_tool": [
+        [
+          {
+            "node": "Schedule AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule AI Agent Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email AI Agent Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Contact": {
+      "ai_tool": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Email AI Agent Tool",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "Schedule AI Agent Tool",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CurrentDateTime": {
+      "ai_tool": [
+        [
+          {
+            "node": "Global AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "deb583ce-b3f3-4807-954b-1097608344a1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1d2666320bb19d8da8975c9b1013bd7bdad6e0bf91ffe1acdc74e48c3285fb2f"
+  },
+  "id": "MPisjZ7cm5PEk3Wx",
+  "tags": []
+}
