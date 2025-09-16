@@ -8,7 +8,7 @@
       "type": "n8n-nodes-webpage-content-extractor.webpageContentExtractor",
       "typeVersion": 1,
       "position": [
-        608,
+        624,
         256
       ],
       "id": "82981d84-a8bc-42e2-a7b9-7b4b0bfc9edc",
@@ -23,6 +23,12 @@
               "name": "textContent",
               "value": "={{ $json.textContent }}",
               "type": "string"
+            },
+            {
+              "id": "8950b216-65df-4ddd-afc6-af2196b33135",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
             }
           ]
         },
@@ -49,7 +55,37 @@
         256
       ],
       "id": "8dc1e3ba-57d0-4f8c-8179-8476ffda108c",
-      "name": "Scrape Page"
+      "name": "Scrape Page",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b90ace5-f51b-40ea-9f62-ee8088cc2045",
+              "name": "success",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "1e2e9105-138a-4d70-b137-b4b0b3e8e7a7",
+              "name": "message",
+              "value": "웹문서 수집에 실패했습니다.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        432
+      ],
+      "id": "686fe17d-4d28-410e-8433-7e57651ccedb",
+      "name": "Error"
     },
     {
       "parameters": {
@@ -68,10 +104,9 @@
         256
       ],
       "id": "3cbf08d7-47bd-46f3-b24a-82842d2ceedb",
-      "name": "When Executed by Another Workflow"
+      "name": "Parameters"
     }
   ],
-  "pinData": {},
   "connections": {
     "WebpageContentExtractor": {
       "main": [
@@ -92,10 +127,17 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Error",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
-    "When Executed by Another Workflow": {
+    "Parameters": {
       "main": [
         [
           {
@@ -107,14 +149,8 @@
       ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "99a29e2e-dde3-4b9c-a488-392a8562cc6c",
+  "pinData": {},
   "meta": {
     "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
-  },
-  "id": "ME87mJIsJhUVs9dq",
-  "tags": []
+  }
 }

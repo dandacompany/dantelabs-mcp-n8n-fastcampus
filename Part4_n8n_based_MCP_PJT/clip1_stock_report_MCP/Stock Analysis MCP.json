@@ -9,7 +9,7 @@
       "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
       "typeVersion": 2,
       "position": [
-        -120,
+        -128,
         -160
       ],
       "id": "abb589d6-9c26-4a35-9560-dae3aba1acf1",
@@ -21,21 +21,6 @@
           "name": "My MCP Authentication"
         }
       }
-    },
-    {
-      "parameters": {
-        "toolDescription": "Investing.com의 다양한 RSS 피드를 수신합니다.\n\n# 분석 & 견해\n\n- 시장 개황: https://kr.investing.com/rss/market_overview.rss\n- 시장 기술 분석: https://kr.investing.com/rss/market_overview_Technical.rss\n- 시장 기본 분석: https://kr.investing.com/rss/market_overview_Fundamental.rss\n- 시장 의견: https://kr.investing.com/rss/market_overview_Opinion.rss\n- 투자 아이디어: https://kr.investing.com/rss/market_overview_investing_ideas.rss\n- 암호화폐 의견과 분석: https://kr.investing.com/rss/302.rss\n- 외환 견해 및 분석: https://kr.investing.com/rss/forex.rss\n- 외환 기술 분석: https://kr.investing.com/rss/forex_Technical.rss\n- 외환 기본 분석: https://kr.investing.com/rss/forex_Fundamental.rss\n- 외환 의견: https://kr.investing.com/rss/forex_Opinion.rss\n- 외환 신호: https://kr.investing.com/rss/forex_Signals.rss\n- 가장 인기 있는 분석: https://kr.investing.com/rss/286.rss\n- 편집자 선정: https://kr.investing.com/rss/290.rss\n- 주식 시장 분석 & 견해: https://kr.investing.com/rss/stock.rss\n- 주식 기술 분석: https://kr.investing.com/rss/stock_Technical.rss\n- 주식 기본 분석: https://kr.investing.com/rss/stock_Fundamental.rss\n- 주식 의견: https://kr.investing.com/rss/stock_Opinion.rss\n- 주식 선택: https://kr.investing.com/rss/stock_stock_picks.rss\n- 주식 분석: https://kr.investing.com/rss/stock_Stocks.rss\n- 지수 분석: https://kr.investing.com/rss/stock_Indices.rss\n- 선물: https://kr.investing.com/rss/stock_Futures.rss\n- 옵션 분석: https://kr.investing.com/rss/stock_Options.rss\n- 상품 분석 및 견해: https://kr.investing.com/rss/commodities.rss\n- 상품 기술 분석: https://kr.investing.com/rss/commodities_Technical.rss\n- 상품 기본 분석: https://kr.investing.com/rss/commodities_Fundamental.rss\n- 상품 의견: https://kr.investing.com/rss/commodities_Opinion.rss\n- 상품 전략: https://kr.investing.com/rss/commodities_Strategy.rss\n- 금속 분석: https://kr.investing.com/rss/commodities_Metals.rss\n- 에너지 분석: https://kr.investing.com/rss/commodities_Energy.rss\n- 농산물 분석: https://kr.investing.com/rss/commodities_Agriculture.rss\n- 채권 분석 및 견해: https://kr.investing.com/rss/bonds.rss\n- 채권 기술 분석: https://kr.investing.com/rss/bonds_Technical.rss\n- 채권 기본 분석: https://kr.investing.com/rss/bonds_Fundamental.rss\n- 채권 의견: https://kr.investing.com/rss/bonds_Opinion.rss\n- 채권 전략: https://kr.investing.com/rss/bonds_Strategy.rss\n- 국채 분석: https://kr.investing.com/rss/bonds_Government.rss\n- 회사 채권 분석: https://kr.investing.com/rss/bonds_Corporate.rss\n\n# 뉴스\n\n- 모든 뉴스: https://kr.investing.com/rss/news.rss\n- 애널리스트 투자의견: https://kr.investing.com/rss/news_1061.rss\n- 실적 보고서/발표 예정일: https://kr.investing.com/rss/news_1062.rss\n- 어닝콜 스크립트: https://kr.investing.com/rss/news_1063.rss\n- SEC 공시: https://kr.investing.com/rss/news_1064.rss\n- 주식 시장 투자 아이디어: https://kr.investing.com/rss/news_1065.rss\n- 암호화폐 뉴스: https://kr.investing.com/rss/news_301.rss\n- 내부자 거래 뉴스: https://kr.investing.com/rss/news_357.rss\n- IPO 뉴스: https://kr.investing.com/rss/news_450.rss\n- 뉴스 속보 헤드라인: https://kr.investing.com/rss/news_462.rss\n- 외환 뉴스: https://kr.investing.com/rss/news_1.rss\n- 많이 본 기사: https://kr.investing.com/rss/news_285.rss\n- 최신 금융 뉴스: https://kr.investing.com/rss/news_477.rss\n- 상품/선물 뉴스: https://kr.investing.com/rss/news_11.rss\n- 주식 시장 뉴스: https://kr.investing.com/rss/news_25.rss\n- 경제 지표 뉴스: https://kr.investing.com/rss/news_95.rss\n- 스포츠 및 일반 뉴스: https://kr.investing.com/rss/news_12.rss\n- 경제 뉴스: https://kr.investing.com/rss/news_14.rss\n",
-        "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.rssFeedReadTool",
-      "typeVersion": 1.2,
-      "position": [
-        -240,
-        64
-      ],
-      "id": "56e111f4-8a57-48b9-b806-1eef45a8389a",
-      "name": "Receive Investing.com RSS"
     },
     {
       "parameters": {
@@ -83,7 +68,7 @@
       "type": "@n8n/n8n-nodes-langchain.toolThink",
       "typeVersion": 1.1,
       "position": [
-        16,
+        176,
         64
       ],
       "id": "b784ee83-eec0-419c-82a0-24cdebf06e6e",
@@ -156,26 +141,29 @@
       "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
       "typeVersion": 2.2,
       "position": [
-        144,
+        32,
         64
       ],
       "id": "463d0eb2-302d-437f-9fcc-72389ab4e2b3",
       "name": "Analyze Chart Image"
+    },
+    {
+      "parameters": {
+        "toolDescription": "**증권, 경제, 주식 관련** CNBC RSS Feed 목록에서 해당되는 링크의 아티클 목록을 가져옵니다.\n\n- [Investing](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069)\n- [Finance](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664)\n- [Economy](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20910258)\n- [Markets Insider](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=20409666)\n- [Earnings](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839135)\n- [Personal Finance](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=21324812)\n- [Financial Advisors](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100646281)\n- [Top News](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114)\n- [Business](https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147)\n\n",
+        "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedReadTool",
+      "typeVersion": 1.2,
+      "position": [
+        -256,
+        64
+      ],
+      "id": "56e111f4-8a57-48b9-b806-1eef45a8389a",
+      "name": "Receive RSS"
     }
   ],
-  "pinData": {},
   "connections": {
-    "Receive Investing.com RSS": {
-      "ai_tool": [
-        [
-          {
-            "node": "MCP Server Trigger",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Scrape Webpage": {
       "ai_tool": [
         [
@@ -208,17 +196,22 @@
           }
         ]
       ]
+    },
+    "Receive RSS": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "f3c88468-1bd0-4dc6-8eb1-a5fd024a951d",
+  "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
-  },
-  "id": "rA3MfSSClSKqzKsP",
-  "tags": []
+  }
 }
