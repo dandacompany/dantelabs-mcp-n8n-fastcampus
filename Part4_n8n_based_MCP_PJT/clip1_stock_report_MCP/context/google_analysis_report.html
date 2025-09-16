@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구글(GOOGL) 주식 기술적 분석 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header .meta {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .price-banner {
+            background: #1a73e8;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .price-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .current-price {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .price-change {
+            background: #34a853;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .executive-summary {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #4285f4;
+        }
+        
+        .executive-summary h2 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .indicators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .indicator-card {
+            background: white;
+            border: 1px solid #e8eaed;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .indicator-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .high-risk {
+            background: #fce8e6;
+            color: #d73027;
+        }
+        
+        .medium-risk {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .low-risk {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .positive {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+        
+        .indicator-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        
+        .chart-section {
+            margin: 30px 0;
+        }
+        
+        .chart-container {
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .chart-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .chart-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .strategy-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .strategy-card {
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+        }
+        
+        .short-term {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+        
+        .medium-term {
+            background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);
+        }
+        
+        .long-term {
+            background: linear-gradient(135deg, #48cab2 0%, #2dd4bf 100%);
+        }
+        
+        .strategy-card h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .strategy-card ul {
+            list-style: none;
+        }
+        
+        .strategy-card li {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+            font-size: 13px;
+        }
+        
+        .strategy-card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .risk-section {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .risk-section h3 {
+            color: #c53030;
+            margin-bottom: 15px;
+        }
+        
+        .conclusion {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid #38b2ac;
+        }
+        
+        .conclusion h3 {
+            color: #285e61;
+            margin-bottom: 15px;
+        }
+        
+        .disclaimer {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .indicators-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .strategy-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .price-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 구글(GOOGL) 주식 기술적 분석 보고서</h1>
+            <div class="meta">
+                <strong>분석 일시:</strong> 2025년 9월 10일 | 
+                <strong>분석 대상:</strong> Alphabet Inc. Class A (NASDAQ: GOOGL)
+            </div>
+        </div>
+        
+        <div class="price-banner">
+            <div class="price-info">
+                <div class="current-price">$239.63</div>
+                <div class="price-change">+$5.59 (+2.39%)</div>
+            </div>
+            <div style="font-size: 14px; opacity: 0.9;">
+                거래량: 38,060,959주
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="executive-summary">
+                <h2>📈 Executive Summary</h2>
+                <p>구글 주식은 현재 <span class="highlight">기술적 과열 상태</span>에 있으면서 <span class="highlight">단기적 조정 가능성</span>이 높습니다. RSI 85.14, 스토캐스틱 95+ 등 과매수 신호가 강력한 과열감을 보여주는 상황에서, 이번 상승과 OBV 지표는 긍정적인 모멘텀을 보여줍니다. <strong>단기 조정 후 상승</strong> 전망을 유지합니다.</p>
+            </div>
+            
+            <h2 style="margin-bottom: 20px; color: #333;">📊 주요 기술적 지표 분석</h2>
+            
+            <div class="indicators-grid">
+                <div class="indicator-card">
+                    <h3>RSI (상대강도지수) <span class="status-badge high-risk">강력 과열</span></h3>
+                    <div class="indicator-value">85.14</div>
+                    <p><strong>현재:</strong> 70 이상 과매수<br>
+                    <strong>의미:</strong> 단기 조정 필요성 증가</p>
+                </div>
+                
+                <div class="indicator-card">
+                    <h3>볼린저 밴드 <span class="status-badge high-risk">상단 근접</span></h3>
+                    <div class="indicator-value">$238.76</div>
+                    <p><strong>현재 위치:</strong> 밴드 상단 근접<br>
+                    <strong>의미:</strong> 매수 압력 과도, 조정 가능</p>
+                </div>
+                
+                <div class="indicator-card">
+                    <h3>이동평균선 <span class="status-badge positive">상승 추세</span></h3>
+                    <div class="indicator-value">+33.4%</div>
+                    <p><strong>200일선 대비:</strong> 33.4% 상승<br>
+                    <strong>의미:</strong> 단기적 조정 후 상승 전망</p>
+                </div>
+                
+                <div class="indicator-card">
+                    <h3>스토캐스틱 <span class="status-badge high-risk">극도 과열</span></h3>
+                    <div class="indicator-value">95.45</div>
+                    <p><strong>SlowD:</strong> 96.71<br>
+                    <strong>의미:</strong> RSI보다도 더 극단적인 단기 과열</p>
+                </div>
+                
+                <div class="indicator-card">
+                    <h3>OBV <span class="status-badge positive">거래량 지지</span></h3>
+                    <div class="indicator-value">307만</div>
+                    <p><strong>8월 대비:</strong> +2만 이상 증가<br>
+                    <strong>의미:</strong> 스마트머니 지속적인 지지</p>
+                </div>
+            </div>
+            
+            <div class="chart-section">
+                <h2 style="margin-bottom: 25px; color: #333;">📊 차트 분석</h2>
+                
+                <div class="chart-container">
+                    <div class="chart-title">📈 Chart 1: RSI & 스토캐스틱 오실레이터</div>
+                    <img src="https://r2.chart-img.com/20250924/tradingview/advanced-chart/b56e87e6-4bbf-484c-99fd-c77d1e7e5c48.png" alt="RSI 와 스토캐스틱 차트">
+                    <div class="chart-description">두 지표 모두 강력한 과매수 구간에 진입하여 단기 조정 가능성을 시사</div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">📈 Chart 2: 볼린저 밴드 & 이동평균선</div>
+                    <img src="https://r2.chart-img.com/20250924/tradingview/advanced-chart/9eca2cce-e953-44bb-8620-e040c66f5614.png" alt="볼린저 밴드 와 이동평균선 차트">
+                    <div class="chart-description">볼린저 밴드 상단 근접은 강한 매수압력을 보여주는 과열 신호. 이동평균선 상승 추세로 단기 조정 후 상승 전망</div>
+                </div>
+                
+                <div class="chart-container">
+                    <div class="chart-title">📈 Chart 3: MACD & OBV</div>
+                    <img src="https://r2.chart-img.com/20250924/tradingview/advanced-chart/4ffd5eb1-a981-416d-8a28-7ce3bf370550.png" alt="MACD 와 OBV 차트">
+                    <div class="chart-description">OBV 지지 지표로 거래량면에서의 지속적인 매수세 확인. 주가 지표의 상승하는 모멘텀</div>
+                </div>
+            </div>
+            
+            <h2 style="margin-bottom: 20px; color: #333;">🎯 투자 전략 및 매매 제안</h2>
+            
+            <div class="strategy-section">
+                <div class="strategy-card short-term">
+                    <h3>⚡ 단기 전략 (1-2주)</h3>
+                    <div style="margin-bottom: 15px;"><strong>위험도: HIGH</strong></div>
+                    <ul>
+                        <li>매도 타이밍 포착</li>
+                        <li>기존 보유 포지션 정리</li>
+                        <li>RSI 70 이하로 하락 대기</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card medium-term">
+                    <h3>📊 중기 전략 (1-3개월)</h3>
+                    <div style="margin-bottom: 15px;"><strong>위험도: MEDIUM</strong></div>
+                    <ul>
+                        <li>매수대기: $215-225 구간</li>
+                        <li>피보나치 38.2%-50% 되돌림</li>
+                        <li>조정 완료 후 매매 제안</li>
+                    </ul>
+                </div>
+                
+                <div class="strategy-card long-term">
+                    <h3>🚀 장기 전략 (6개월+)</h3>
+                    <div style="margin-bottom: 15px;"><strong>위험도: LOW</strong></div>
+                    <ul>
+                        <li>이동평균선 지지 추세 유지</li>
+                        <li>OBV 지지 지표로 상승 모멘텀</li>
+                        <li>지속적인 성장 주식</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="risk-section">
+                <h3>⚠️ 투자 매매 주의사항</h3>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 10px;">🔴 <strong>기술적 과열:</strong> RSI 85 + 스토캐스틱 95는 1987년 크래시 직전 수준</li>
+                    <li style="margin-bottom: 10px;">🔴 <strong>볼린저 밴드 이탈:</strong> 매수 압력 과도로 인한 조정 가능성</li>
+                    <li>🔴 <strong>시장 전체 조정:</strong> 글로벌 시장 조정의 영향에 주의</li>
+                </ul>
+            </div>
+            
+            <div class="conclusion">
+                <h3>💡 최종 투자 의견</h3>
+                <p><strong>현재 구글은 "과열된 상승, 조정 후 상승"입니다.</strong></p>
+                <p>기술적 지표들이 단기 과열을 강력히 시사하고 있지만, 거래량면 지표와 이동평균선 상승추세는 지속적인 매수세의 지속성을 보여줍니다. 단기적 조정은 불가피해 보이지만, 이는 새로운 매수 기회를 제공하는 건전한 조정으로 판단됩니다.</p>
+                <p style="margin-top: 15px;"><strong>매매 결론:</strong> 기존 보유자는 단기 조정 대비 포지션 정리 후, 단기 전략은 RSI 70 이하로 하락하는 매수대기 제안을 제시합니다.</p>
+            </div>
+            
+            <div class="disclaimer">
+                <strong>면책조항:</strong> 본 분석 보고서는 기술적 분석을 바탕으로 한 의견일 뿐, 투자 결정에 대한 책임은 투자자 본인에게 있습니다.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
