@@ -1,0 +1,468 @@
+{
+  "name": "Data Crawler MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "bearerAuth",
+        "path": "crawler"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -336,
+        928
+      ],
+      "id": "ebe14e67-2d24-4405-9ce7-c56ac9006f87",
+      "name": "MCP Server Trigger",
+      "webhookId": "8e419f72-e4d5-4d08-96c5-9c39b612501d",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "CP5u16RVJLUgpM8C",
+          "name": "My MCP Authentication"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "url"
+            },
+            {
+              "name": "type"
+            },
+            {
+              "name": "prompt"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -144,
+        1584
+      ],
+      "id": "22423e5d-6f3a-493b-bb5a-f8b0a9c71a9c",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.data }}"
+      },
+      "type": "n8n-nodes-webpage-content-extractor.webpageContentExtractor",
+      "typeVersion": 1,
+      "position": [
+        528,
+        1392
+      ],
+      "id": "190d4022-2640-43bf-9726-c450bad51315",
+      "name": "WebpageContentExtractor"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99b289b7-6e2b-4476-a8e6-da20681e14fc",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1104,
+        1392
+      ],
+      "id": "f4878231-5f41-4bff-9f12-cb36647b762f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "static",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "91506cf0-8e07-4997-98ed-0a4713fb3851"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "static"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c2777c36-4b8a-4017-9933-470b39830adb",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "dynamic",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "dynamic"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        80,
+        1568
+      ],
+      "id": "b0a9ec77-8d08-4ad4-a104-fce8c06a70a0",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.firecrawl.dev/v2/scrape",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"url\": \"{{ $json.url }}\",\n  \"formats\": [{\n        \"type\": \"json\",\n        \"prompt\": \"{{ $json.prompt.replaceAll(\"\\n\", \"\") }}\"\n  }]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        304,
+        1584
+      ],
+      "id": "e3d874df-f91a-46ab-9802-fa8d4b525781",
+      "name": "Firecrawl Scrape",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "aaHrmWm5jH3bQsnZ",
+          "name": "FireCrawl Bearer Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# 역할 및 지침\n당신은 주어진 텍스트 문서에서 사용자가 요청하는 내용을 추출하는 전문가야.\n아래 추출 대상 문서에서 사용자 요청 프롬프트에 맞는 내용을 출력형식에 맞게 생성해야되.\n\n# 추출 대상 문서\n\n{{ $json.textContent }}\n\n# 사용자 요청 프롬프트\n{{ $('Switch').item.json.prompt }}\n\n# 출력 형식 : JSON records\n[{\n\"property1\": \"...\",\n\"property2\": \"...\", \n...\n}, {\n...\n}, ...]\n\n}]\n",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        752,
+        1392
+      ],
+      "id": "c78c523d-5302-49ee-82c2-cf30be943d32",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        824,
+        1616
+      ],
+      "id": "317b5f32-b081-4fdf-b355-c207239caa39",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZEa0FOrXM9016Vdd",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "decf8de4-aae2-4b7c-a915-fb7df3af838c",
+              "name": "output",
+              "value": "={{ $json.data.json }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        528,
+        1584
+      ],
+      "id": "dc1fe2f8-081e-44cf-9033-9dcaaa556d9a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "content": "## 스크래퍼 서브 워크플로",
+        "height": 672,
+        "width": 1808
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -368,
+        1312
+      ],
+      "typeVersion": 1,
+      "id": "5ba5af8b-0133-42f8-9ff1-d06e94230979",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "description": "정적/동적 웹페이지의 내용을 조회하고 수집하고자 하는 내용을 데이터 크롤링 및 파싱하여 가져오는 도구",
+        "workflowId": {
+          "__rl": true,
+          "value": "WPJg5cWCEQ2ncQ5d",
+          "mode": "list",
+          "cachedResultName": "Data Crawler MCP"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('url', `수집하고자 하는 웹페이지 링크 주소`, 'string') }}",
+            "prompt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('prompt', `사용자가 수집하고자 하는 요청 프롬프트 텍스트`, 'string') }}",
+            "type": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('type', `static | dynamic | api\nstatic : 정적 웹페이지 스크랩\ndynamic : 동적 웹페이지 스크랩\napi : api 방식 스크랩(준비중)`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        1152
+      ],
+      "id": "7c20ecfd-86a7-495e-a481-7f635e19d1fe",
+      "name": "Webpage Scraper"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        304,
+        1392
+      ],
+      "id": "0e02f667-3710-402e-8ffd-0a8783ec9f3b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "errorMessage": "type을 확인하세요. ( static | dynamic )"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        304,
+        1776
+      ],
+      "id": "19992285-c99a-42b4-8dc6-2a7cc49c9fff",
+      "name": "Stop and Error"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "url": "https://store.kyobobook.co.kr/bestseller/online/daily",
+          "type": "dynamic",
+          "prompt": "도서 목록(도서명, 저자명, 출판사명, 가격)"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WebpageContentExtractor": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Firecrawl Scrape",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Firecrawl Scrape": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webpage Scraper": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "WebpageContentExtractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "87279b3f-5593-4676-94c6-77d3b3d0877e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "WPJg5cWCEQ2ncQ5d",
+  "tags": []
+}

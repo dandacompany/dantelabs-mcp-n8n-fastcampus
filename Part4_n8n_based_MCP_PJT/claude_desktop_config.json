@@ -48,6 +48,21 @@
                 "mcp-remote",
                 "http://localhost:5678/mcp/designstudio"
             ]
+        },
+        "DataCrawler": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "http://localhost:5678/mcp/crawler"
+            ]
+        },
+        "PostgreSQL": {
+            "command": "npx",
+            "args": [
+                "@henkey/postgres-mcp-server",
+                "--connection-string", "postgresql://[USERNAME]:[PASSWORD]@[HOST]:[PORT]/[DATABASE]"
+            ]
         }
     },
     "isUsingBuiltInNodeForMcp": false
