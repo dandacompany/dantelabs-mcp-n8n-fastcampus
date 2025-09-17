@@ -67,7 +67,7 @@
             {
               "id": "99b289b7-6e2b-4476-a8e6-da20681e14fc",
               "name": "content",
-              "value": "={{ $json.content }}",
+              "value": "={{ $json.text }}",
               "type": "string"
             }
           ]
@@ -180,7 +180,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=# 역할 및 지침\n당신은 주어진 텍스트 문서에서 사용자가 요청하는 내용을 추출하는 전문가야.\n아래 추출 대상 문서에서 사용자 요청 프롬프트에 맞는 내용을 출력형식에 맞게 생성해야되.\n\n# 추출 대상 문서\n\n{{ $json.textContent }}\n\n# 사용자 요청 프롬프트\n{{ $('Switch').item.json.prompt }}\n\n# 출력 형식 : JSON records\n[{\n\"property1\": \"...\",\n\"property2\": \"...\", \n...\n}, {\n...\n}, ...]\n\n}]\n",
+        "text": "=# 역할 및 지침\n당신은 주어진 텍스트 문서에서 사용자가 요청하는 내용을 추출하는 전문가야.\n아래 추출 대상 문서에서 사용자 요청 프롬프트에 맞는 내용을 출력형식에 맞게 생성해야되.\n\n# 추출 대상 문서\n\n{{ $json.textContent }}\n\n# 사용자 요청 프롬프트\n{{ $('Switch').item.json.prompt }}\n\n# 출력 형식 : JSON records\n[{\n\"property1\": \"...\",\n\"property2\": \"...\", \n...\n}, {\n...\n}, ...]",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
