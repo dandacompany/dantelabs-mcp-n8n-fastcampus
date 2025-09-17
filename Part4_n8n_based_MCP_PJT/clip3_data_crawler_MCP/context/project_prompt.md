@@ -27,7 +27,7 @@ C:\users\USER\Downloads\dataset (없으면 생성)
 3) DB에 테이블은 fastcampus-* 로 prefix로 시작하도록 네이밍한다.
 4) 테이블의 설명에 사용자가 어느사이트의 어떤 데이터를 수집요청했었는지 기록한다.
 5) 기존에 요청 데이터가 저장된 테이블(fastcampus-*)이 있는지 먼저 확인한다.
-6) create -> insert 까지 모든 수집을 마친후, supabase의 어떤테이블에 어떤 스키마 구조로 몇개 행을 저장했는지 응답하고 종료한다.
+6) create -> insert 까지 모든 수집을 마친후, postgresql의 어떤테이블에 어떤 스키마 구조로 몇개 행을 저장했는지 응답하고 종료한다.
 7) 웹페이지 컨텐츠를 생략하여 일부만 저장하지 말고, 전체 수집 대상 데이터를 모두 저장해야되.
 8) Static Web Scraper로 수집이 가능한지 먼저 확인하고, 안되면 Dynamic Web Scraper를 사용한다.
 9) 수집결과를 확인하고, PostgreSQL 도구를 사용해서 데이터 저장 폴더에 xlsx 파일로 저장합니다.
