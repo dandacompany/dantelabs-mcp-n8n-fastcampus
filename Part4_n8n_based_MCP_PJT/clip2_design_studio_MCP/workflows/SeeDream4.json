@@ -1,0 +1,122 @@
+{
+  "name": "SeeDream4",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "size"
+            },
+            {
+              "name": "width",
+              "type": "number"
+            },
+            {
+              "name": "height",
+              "type": "number"
+            },
+            {
+              "name": "prompt"
+            },
+            {
+              "name": "max_images",
+              "type": "number"
+            },
+            {
+              "name": "image_input"
+            },
+            {
+              "name": "aspect_ratio"
+            },
+            {
+              "name": "sequential_image_generation"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        208,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.replicate.com/v1/models/bytedance/seedream-4/predictions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Prefer",
+              "value": "wait"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"input\": {\n    \"size\": \"{{ $json.size }}\",\n    \"width\": {{ $json.width }},\n    \"height\": {{ $json.height }},\n    \"prompt\": \"{{ $json.prompt }}\",\n    \"max_images\": {{ $json.max_images }},\n    \"image_input\": [{{ $json.image_input.split(\",\").map(e=>`\"${e.trim()}\"`) }}],\n    \"aspect_ratio\": \"{{ $json.aspect_ratio }}\",\n    \"sequential_image_generation\": \"{{ $json.sequential_image_generation }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        352
+      ],
+      "id": "ee1da762-cfad-4f87-a1dd-ad35c9fb8c19",
+      "name": "API Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "lgKZeS8dwKGgOyNT",
+          "name": "Replicate Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "size": "2K",
+          "width": 2048,
+          "height": 2048,
+          "prompt": "Extract and isolate only the center character (Lumi) from this image, remove the background and other characters, create a clean cutout of just the main center character",
+          "max_images": 1,
+          "image_input": "https://www.billboard.com/wp-content/uploads/2025/07/kpop-demon-hunters-billboard-1800.jpg, https://www.billboard.com/wp-content/uploads/2025/07/kpop-demon-hunters-billboard-1800.jpg",
+          "aspect_ratio": "1:1",
+          "sequential_image_generation": "disabled"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "API Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6dd239d9-b8a3-49ca-acb2-eed9ba595bf4",
+  "meta": {
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "Il2lE4SLaHcLTPgv",
+  "tags": []
+}

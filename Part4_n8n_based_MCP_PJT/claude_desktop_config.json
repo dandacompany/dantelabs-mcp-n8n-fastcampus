@@ -40,6 +40,14 @@
             "env": {
                 "MY_N8N_AUTH_TOKEN": "xxxxxxxxxxxxxxxxx"
             }
+        },
+        "DesignStudio": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "http://localhost:5678/mcp/designstudio"
+            ]
         }
     },
     "isUsingBuiltInNodeForMcp": false

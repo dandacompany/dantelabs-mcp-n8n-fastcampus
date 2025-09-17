@@ -1,0 +1,257 @@
+{
+  "name": "DesignStudio MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "nanobanana"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1ce051fe-791b-4f0e-b71e-3b0f626fd9e7",
+      "name": "MCP Server Trigger",
+      "webhookId": "3f5e1b50-7876-494c-acdc-d79529624004"
+    },
+    {
+      "parameters": {
+        "description": "Unified text-to-image generation and precise single-sentence editing at up to 4K resolution",
+        "workflowId": {
+          "__rl": true,
+          "value": "Il2lE4SLaHcLTPgv",
+          "mode": "list",
+          "cachedResultName": "SeeDream4"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "width": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('width', `Custom image width (only used when size='custom'). Range: 1024-4096 pixels. (default: 2048)`, 'number') }}",
+            "height": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('height', `Custom image height (only used when size='custom'). Range: 1024-4096 pixels. (default: 2048)`, 'number') }}",
+            "max_images": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('max_images', `Maximum number of images to generate when sequential_image_generation='auto'. Range: 1-15. Total images (input + generated) cannot exceed 15. (default: 1)`, 'number') }}",
+            "size": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('size', `Image resolution: 1K (1024px), 2K (2048px), 4K (4096px), or 'custom' for specific dimensions. (default: 2K)`, 'string') }}",
+            "prompt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('prompt', `Text prompt for image generation`, 'string') }}",
+            "image_input": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('image_input', `Input image(s) for image-to-image generation. List of 1-10 images for single or multi-reference generation.\nDefault: ''\ne.g. 'http://example.com/image1.png,http://example.com/image2.png'`, 'string') }}",
+            "aspect_ratio": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('aspect_ratio', `Image aspect ratio. Only used when size is not 'custom'. Use 'match_input_image' to automatically match the input image's aspect ratio. choose one of these. 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9 (default: 1:1)`, 'string') }}",
+            "sequential_image_generation": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('sequential_image_generation', `Group image generation mode. 'disabled' generates a single image. 'auto' lets the model decide whether to generate multiple related images (e.g., story scenes, character variations). (default: disabled)`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "size",
+              "displayName": "size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "width",
+              "displayName": "width",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "height",
+              "displayName": "height",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "max_images",
+              "displayName": "max_images",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "image_input",
+              "displayName": "image_input",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "aspect_ratio",
+              "displayName": "aspect_ratio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sequential_image_generation",
+              "displayName": "sequential_image_generation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        304,
+        208
+      ],
+      "id": "ecdbf57a-acc6-43dd-8206-909a08e1af61",
+      "name": "SeeDream4"
+    },
+    {
+      "parameters": {
+        "description": "Nanobanana 모델을 이용해서 주어진 이미지를 편집 및 합성하거나, 새로운 이미지를 생성할때 사용하는 도구",
+        "workflowId": {
+          "__rl": true,
+          "value": "5wBYB7759LYOkCSi",
+          "mode": "list",
+          "cachedResultName": "NanoBanana"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "prompt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('prompt', `message that user request for editing given image`, 'string') }}",
+            "imageUrls": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('imageUrls', `여러 이미지 url을 comma로 구분해서 전달하세요. \ne.g. \"https://example.com/image1.jpg,https://example.com/image2.jpg\" `, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "prompt",
+              "displayName": "prompt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "imageUrls",
+              "displayName": "imageUrls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        208
+      ],
+      "id": "bfdc526e-c94d-4ed4-b96b-39051255cc5e",
+      "name": "NanoBanana"
+    },
+    {
+      "parameters": {
+        "toolDescription": "SeeDream4로 생성 요청한 이미지의 생성 진행상태를 확인하고, 생성이 완료되면 이미지 링크를 조회할수 있는 도구",
+        "url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('URL', `https://api.replicate.com/v1/predictions/[prediction id]`, 'string') }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -16,
+        208
+      ],
+      "id": "ba5d80e6-8b40-4d09-ada7-deda7ff8629e",
+      "name": "Check Generation Status",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "lgKZeS8dwKGgOyNT",
+          "name": "Replicate Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "SeeDream4": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NanoBanana": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Generation Status": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b29fae0d-07ca-40d0-b32c-610998a62908",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "4YxBRlWititCcp6W",
+  "tags": []
+}

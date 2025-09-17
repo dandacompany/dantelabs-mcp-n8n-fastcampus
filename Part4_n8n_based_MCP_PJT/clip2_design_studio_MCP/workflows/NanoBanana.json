@@ -1,0 +1,86 @@
+{
+  "name": "NanoBanana",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "prompt"
+            },
+            {
+              "name": "imageUrls"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -48,
+        -64
+      ],
+      "id": "a2c23909-a061-4620-83ee-914ef78e5014",
+      "name": "Parameters"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.replicate.com/v1/predictions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Prefer",
+              "value": "wait"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"version\": \"google/nano-banana\",\n  \"input\": {\n    \"prompt\": \"{{$json.prompt}}\",\n    \"image_input\": [{{ $json.imageUrls?.split(\",\").map((e=>`\"`+e+`\"`)) ?? null }}]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        160,
+        -64
+      ],
+      "id": "b37d1d1b-8c92-496f-a301-d3431012b163",
+      "name": "Edit Image",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "lgKZeS8dwKGgOyNT",
+          "name": "Replicate Auth account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Parameters": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "50affefc-e62e-4fd4-96b2-ea7ca3991f2d",
+  "meta": {
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "5wBYB7759LYOkCSi",
+  "tags": []
+}
