@@ -63,6 +63,14 @@
                 "@henkey/postgres-mcp-server",
                 "--connection-string", "postgresql://[USERNAME]:[PASSWORD]@[HOST]:[PORT]/[DATABASE]"
             ]
+        },
+        "BookScanner": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "http://localhost:5678/mcp/parsing_book"
+            ]
         }
     },
     "isUsingBuiltInNodeForMcp": false
