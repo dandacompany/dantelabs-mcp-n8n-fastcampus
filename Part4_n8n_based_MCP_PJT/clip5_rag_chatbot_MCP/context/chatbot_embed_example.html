@@ -174,13 +174,13 @@
                 }
                 
                 // webhook URL 형식 검증
-                if (!n8nWebhookUrl.startsWith('https://') || !n8nWebhookUrl.includes('/webhook/')) {
+                if (!n8nWebhookUrl.startsWith('http') || !n8nWebhookUrl.includes('/webhook/')) {
                     console.error('🚨 잘못된 webhook URL 형식');
                     return false;
                 }
                 
                 return true;
-            }
+            }ß
 
             // === 방어 로직 3: iframe 로드 오류 처리 ===
             function setupIframeErrorHandling() {
