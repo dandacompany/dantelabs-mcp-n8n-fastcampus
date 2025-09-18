@@ -71,6 +71,14 @@
                 "mcp-remote",
                 "http://localhost:5678/mcp/parsing_book"
             ]
+        },
+        "RAGMaker": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-remote",
+                "http://localhost:5678/mcp/rag"
+            ]
         }
     },
     "isUsingBuiltInNodeForMcp": false
