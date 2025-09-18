@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n 챗봇 임베드 테스트</title>
+    <style>
+        /* 페이지 기본 스타일 (가상 랜딩페이지) */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f4f7f6;
+            color: #333;
+            height: 200vh; /* 페이지가 길다는 것을 보여주기 위한 스크롤 생성 */
+        }
+        h1 {
+            color: #003366;
+        }
+        p {
+            line-height: 1.6;
+        }
+
+        /* --- 챗봇 위젯 스타일 --- */
+
+        /* 플로팅 버튼 (챗봇 토글) */
+        #chat-toggle-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff; /* 원하는 색상으로 변경하세요 */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 28px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+            z-index: 9998;
+        }
+
+        #chat-toggle-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* 챗봇 컨테이너 */
+        #chat-widget-container {
+            position: fixed;
+            bottom: 90px; /* 버튼 높이 + 여백 */
+            right: 20px;
+            width: 370px;
+            height: 600px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+            overflow: hidden; /* 내부 iframe이 둥근 모서리를 넘지 않도록 */
+            z-index: 9999;
+            
+            /* 초기 상태 (숨김) */
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none; /* 숨겨져 있을 때 클릭 방지 */
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        /* 챗봇 컨테이너가 보일 때의 스타일 */
+        #chat-widget-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto; /* 보일 때 다시 클릭 가능하도록 */
+        }
+
+        /* n8n 챗봇 iframe */
+        #n8n-chat-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>가상의 랜딩 페이지입니다</h1>
+    <p>이 페이지는 n8n 챗봇을 임베드하는 방법을 보여주기 위한 예시입니다.</p>
+    <p>페이지 우측 하단의 파란색 동그라미 버튼을 클릭하여 챗봇과 대화를 시작하세요.</p>
+    <br>
+    <p>페이지를 스크롤해도 버튼과 채팅창은 항상 같은 위치에 고정됩니다.</p>
+
+    <div id="chat-widget-container">
+        <iframe id="n8n-chat-iframe" src="" title="n8n Chat"></iframe>
+    </div>
+
+    <button id="chat-toggle-button" aria-label="채팅 열기">
+        💬
+    </button>
+    
+    <script>
+        // DOM 요소가 모두 로드된 후에 스크립트를 실행합니다.
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 필요한 요소들을 가져옵니다.
+            const chatToggleButton = document.getElementById('chat-toggle-button');
+            const chatWidgetContainer = document.getElementById('chat-widget-container');
+            const n8nIframe = document.getElementById('n8n-chat-iframe');
+
+            // n8n Webhook URL을 변수에 저장합니다.
+            const n8nWebhookUrl = 'https://n8n.dante-datalab.com/webhook/4224c4d7-bdb4-462f-b60e-517412a3bb6c';
+
+            // iframe이 로드되었는지 확인하는 플래그
+            let isChatLoaded = false;
+            let isRecursionDetected = false;
+
+            // === 방어 로직 1: 재귀 로딩 감지 및 방지 ===
+            function detectRecursion() {
+                // 현재 페이지가 iframe 내부에서 로드되고 있는지 확인
+                if (window !== window.top) {
+                    console.warn('🚨 재귀 로딩 감지: iframe 내부에서 실행 중');
+                    isRecursionDetected = true;
+                    
+                    // iframe 내부에서는 챗봇 기능 완전 비활성화
+                    chatToggleButton.style.display = 'none';
+                    chatWidgetContainer.style.display = 'none';
+                    
+                    // 모든 iframe 요소 비활성화
+                    const allIframes = document.querySelectorAll('iframe');
+                    allIframes.forEach(iframe => {
+                        iframe.style.display = 'none';
+                        iframe.src = 'about:blank';
+                    });
+                    
+                    // 페이지 상단에 경고 메시지 표시
+                    const warningDiv = document.createElement('div');
+                    warningDiv.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        background: #ff4444;
+                        color: white;
+                        padding: 10px;
+                        text-align: center;
+                        z-index: 10000;
+                        font-weight: bold;
+                    `;
+                    warningDiv.textContent = '⚠️ 재귀 로딩 감지됨 - 챗봇 기능이 비활성화되었습니다';
+                    document.body.insertBefore(warningDiv, document.body.firstChild);
+                    
+                    // 추가 안전장치: 모든 클릭 이벤트 차단
+                    document.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.warn('재귀 감지로 인해 클릭 차단');
+                    }, true);
+                    
+                    return true;
+                }
+                return false;
+            }
+
+            // === 방어 로직 2: URL 검증 ===
+            function validateWebhookUrl() {
+                const currentUrl = window.location.href;
+                
+                // 재귀 로딩 방지: webhook URL이 현재 페이지 URL을 포함하는지 확인
+                if (n8nWebhookUrl.includes(currentUrl) || currentUrl.includes(n8nWebhookUrl)) {
+                    console.error('🚨 URL 검증 실패: 재귀 로딩 위험');
+                    isRecursionDetected = true;
+                    return false;
+                }
+                
+                // webhook URL 형식 검증
+                if (!n8nWebhookUrl.startsWith('https://') || !n8nWebhookUrl.includes('/webhook/')) {
+                    console.error('🚨 잘못된 webhook URL 형식');
+                    return false;
+                }
+                
+                return true;
+            }
+
+            // === 방어 로직 3: iframe 로드 오류 처리 ===
+            function setupIframeErrorHandling() {
+                n8nIframe.addEventListener('error', (e) => {
+                    console.error('🚨 iframe 로드 오류:', e);
+                    showErrorMessage('챗봇을 로드할 수 없습니다. 잠시 후 다시 시도해주세요.');
+                });
+
+                n8nIframe.addEventListener('load', () => {
+                    // iframe 로드 후에도 재귀 확인
+                    setTimeout(() => {
+                        try {
+                            const iframeDoc = n8nIframe.contentDocument || n8nIframe.contentWindow.document;
+                            if (iframeDoc && iframeDoc.location.href === window.location.href) {
+                                console.error('🚨 iframe 재귀 로딩 감지');
+                                showErrorMessage('챗봇 URL이 잘못되었습니다. 관리자에게 문의하세요.');
+                                n8nIframe.src = 'about:blank';
+                            }
+                        } catch (e) {
+                            // Cross-origin 제한으로 인한 오류는 무시
+                            console.log('iframe 내용 확인 불가 (정상적인 경우)');
+                        }
+                    }, 1000);
+                });
+            }
+
+            // === 방어 로직 4: 오류 메시지 표시 ===
+            function showErrorMessage(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #ff4444;
+                    color: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    z-index: 10001;
+                    text-align: center;
+                    max-width: 300px;
+                `;
+                errorDiv.innerHTML = `
+                    <h3>⚠️ 오류</h3>
+                    <p>${message}</p>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: white;
+                        color: #ff4444;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-top: 10px;
+                    ">확인</button>
+                `;
+                document.body.appendChild(errorDiv);
+            }
+
+            // === 방어 로직 5: 안전한 iframe 로드 ===
+            function safeLoadIframe() {
+                if (isRecursionDetected) {
+                    console.warn('재귀 감지로 인해 iframe 로드 중단');
+                    return false;
+                }
+
+                if (!validateWebhookUrl()) {
+                    showErrorMessage('챗봇 URL이 올바르지 않습니다.');
+                    return false;
+                }
+
+                try {
+                    n8nIframe.src = n8nWebhookUrl;
+                    isChatLoaded = true;
+                    console.log('✅ iframe 안전하게 로드됨');
+                    return true;
+                } catch (e) {
+                    console.error('🚨 iframe 로드 실패:', e);
+                    showErrorMessage('챗봇을 로드하는 중 오류가 발생했습니다.');
+                    return false;
+                }
+            }
+
+            // === 초기화 및 방어 로직 실행 ===
+            if (detectRecursion()) {
+                // 재귀 감지 시 추가 작업 중단
+                return;
+            }
+
+            // iframe 오류 처리 설정
+            setupIframeErrorHandling();
+
+            // 플로팅 버튼 클릭 이벤트 처리 (방어 로직 포함)
+            chatToggleButton.addEventListener('click', () => {
+                // 재귀 감지 시 클릭 무시
+                if (isRecursionDetected) {
+                    console.warn('재귀 감지로 인해 클릭 무시');
+                    return;
+                }
+
+                // 처음 버튼을 클릭했을 때만 iframe의 src를 설정합니다. (성능 최적화)
+                if (!isChatLoaded) {
+                    if (!safeLoadIframe()) {
+                        return; // 로드 실패 시 토글하지 않음
+                    }
+                }
+                
+                // 'visible' 클래스를 토글하여 채팅창을 보여주거나 숨깁니다.
+                chatWidgetContainer.classList.toggle('visible');
+            });
+
+            // === 추가 안전장치: 페이지 언로드 시 정리 ===
+            window.addEventListener('beforeunload', () => {
+                if (n8nIframe.src && n8nIframe.src !== 'about:blank') {
+                    n8nIframe.src = 'about:blank';
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

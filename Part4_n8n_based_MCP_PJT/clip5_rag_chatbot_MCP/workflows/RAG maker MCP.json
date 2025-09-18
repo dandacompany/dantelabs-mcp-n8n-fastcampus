@@ -1,0 +1,675 @@
+{
+  "name": "RAG maker MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "bearerAuth",
+        "path": "rag"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        -16
+      ],
+      "id": "e178def6-0539-4146-bca2-919cdfdca886",
+      "name": "MCP Server Trigger",
+      "webhookId": "4ec98da3-4b1c-419a-8fa9-b14e962365d3",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "CP5u16RVJLUgpM8C",
+          "name": "My MCP Authentication"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Execute a SQL query in Postgres",
+        "operation": "executeQuery",
+        "query": "{{ $fromAI('query', 'SQL statement', 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        -576,
+        240
+      ],
+      "id": "b229024d-bcf5-4c6c-872d-c7261aae8737",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "lN2fZ27xETHNgKRa",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.content || $json.data || $json.text || $json.concatenated_data }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "=file_id",
+                "value": "={{ $('Get metadata').item.json.id }}"
+              },
+              {
+                "name": "=file_name",
+                "value": "={{ $('Get metadata').item.json.name }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "94c1d0e6-3822-45ad-8e4a-c41f79d6bd2d",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        288,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "chunkSize": 800,
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        320,
+        1136
+      ],
+      "id": "7c835d17-68f9-484a-b7c3-69fac85bd535",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "bucketName"
+            },
+            {
+              "name": "objectName"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1120,
+        896
+      ],
+      "id": "f520bce8-4c1a-43d0-8aa4-941357db4b71",
+      "name": "Parameter"
+    },
+    {
+      "parameters": {
+        "resource": "object",
+        "operation": "get",
+        "bucketName": "={{ $json.bucket }}",
+        "objectName": "={{ $json.name }}",
+        "alt": "media",
+        "getParameters": {},
+        "encryptionHeaders": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.googleCloudStorage",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        896
+      ],
+      "id": "13a025c4-b61c-4ddf-b763-aceec12cae2f",
+      "name": "Get object",
+      "credentials": {
+        "googleCloudStorageOAuth2Api": {
+          "id": "H9R1D5j2ATm68V5z",
+          "name": "Google Storage account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Get metadata').item.json.contentType }}",
+                    "rightValue": "application/pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "5fe78f9b-2ff3-4adc-954e-53bfce35c142"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "b69f5605-0179-4b02-9a32-e34bb085f82d",
+                    "leftValue": "={{ $('Get metadata').item.json.contentType }}",
+                    "rightValue": "text/",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "plain text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "62927e38-86a9-4252-9a84-97eb08d9c045",
+                    "leftValue": "={{ $('Get metadata').item.json.contentType }}",
+                    "rightValue": "[\"application/msword\", \"application/vnd.openxmlformats-officedocument.wordprocessingml.document\"]",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "docs"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "2a51c5c7-313d-47a1-8296-236e7b2cd6e9",
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -432,
+        864
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "지원하지 않는 파일 형식입니다."
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        1088
+      ],
+      "id": "4b18fe26-f79b-4df4-b17d-db9df1c0f4ba",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": "=document_records",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        752
+      ],
+      "id": "5e4207e1-05dc-40f5-836e-898f2b305bd4",
+      "name": "Postgres PGVector Store",
+      "credentials": {
+        "postgres": {
+          "id": "lN2fZ27xETHNgKRa",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {}
+      },
+      "id": "31823fcc-5c5e-4d91-bb1b-2892ce497b6d",
+      "name": "Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1,
+      "position": [
+        144,
+        976
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "drLx0rcWm5iXttc5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "32ae8b44-2cba-4465-8fe6-d97f21f080f4",
+      "name": "Extract Document",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        912
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "56c98a80-c19c-46a9-8e0c-d0168d36fcc0",
+      "name": "Extract PDF",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        752
+      ]
+    },
+    {
+      "parameters": {
+        "description": "구글클라우드스토리지의 오브젝트명과 데이터베이스 테이블명(메타정보, 레코드정보)을 전달받아 해당 파일을 RAG DB시스템에 저장하는 도구",
+        "workflowId": {
+          "__rl": true,
+          "value": "Y9MgwrrCofCUxizz",
+          "mode": "list",
+          "cachedResultName": "RAG maker MCP"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "bucketName": "dante-docs",
+            "objectName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('objectName', `구글스토리지에 파일 오브젝트를 저장할때 사용할 파일 확장자명을 포함한 파일명`, 'string') }}",
+            "docRecordsTableName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('docRecordsTableName', `문서의 청크 레코드를 저장할 테이블명`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "bucketName",
+              "displayName": "bucketName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "objectName",
+              "displayName": "objectName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "docRecordsTableName",
+              "displayName": "docRecordsTableName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -768,
+        240
+      ],
+      "id": "a23ae82a-5b18-4aae-b388-69e68a2dc044",
+      "name": "Save Document"
+    },
+    {
+      "parameters": {
+        "content": "# 문서 저장 로직",
+        "height": 688,
+        "width": 1856
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1216,
+        656
+      ],
+      "typeVersion": 1,
+      "id": "c81481ec-4a47-4efb-8a8e-7ba04aa04a56",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -416,
+        416
+      ],
+      "id": "bb52735d-7a4e-40bd-9ee8-c324438e085a",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "drLx0rcWm5iXttc5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topN": 4
+      },
+      "type": "@n8n/n8n-nodes-langchain.rerankerCohere",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        416
+      ],
+      "id": "63fc07b1-7e54-4569-9ff4-5e0d9fadfbbc",
+      "name": "Reranker Cohere",
+      "credentials": {
+        "cohereApi": {
+          "id": "3ow2gYF1XhPMi1Rl",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use RAG to look up information in the knowledgebase.",
+        "tableName": "=document_records",
+        "topK": 25,
+        "useReranker": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        -384,
+        240
+      ],
+      "id": "db902bd6-7d37-463e-9a2e-e0f7b16752ed",
+      "name": "Retrieve Records",
+      "credentials": {
+        "postgres": {
+          "id": "lN2fZ27xETHNgKRa",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "object",
+        "operation": "get",
+        "bucketName": "={{ $json.bucketName }}",
+        "objectName": "={{ $json.objectName }}",
+        "getParameters": {},
+        "encryptionHeaders": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.googleCloudStorage",
+      "typeVersion": 1,
+      "position": [
+        -912,
+        896
+      ],
+      "id": "9d9316cb-b8ad-432e-be27-e395778a1ae2",
+      "name": "Get metadata",
+      "credentials": {
+        "googleCloudStorageOAuth2Api": {
+          "id": "H9R1D5j2ATm68V5z",
+          "name": "Google Storage account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Parameter": [
+      {
+        "json": {
+          "bucketName": "dante-docs",
+          "objectName": "i-and-l-03-4178509-ko.pdf",
+          "docsMetadataTableName": "document_metadata",
+          "docRecordsTableName": "document_pg"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Execute a SQL query": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parameter": {
+      "main": [
+        [
+          {
+            "node": "Get metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get object": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract Document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract Document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Document": {
+      "main": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF": {
+      "main": [
+        [
+          {
+            "node": "Postgres PGVector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Document": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Retrieve Records",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reranker Cohere": {
+      "ai_reranker": [
+        [
+          {
+            "node": "Retrieve Records",
+            "type": "ai_reranker",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Records": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get metadata": {
+      "main": [
+        [
+          {
+            "node": "Get object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "43469cd1-7186-42f5-a84e-a31515deb9ac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "Y9MgwrrCofCUxizz",
+  "tags": []
+}

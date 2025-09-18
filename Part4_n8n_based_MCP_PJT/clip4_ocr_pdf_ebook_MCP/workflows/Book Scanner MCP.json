@@ -1,0 +1,162 @@
+{
+  "name": "Book Scanner MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "bearerAuth",
+        "path": "parsing_book"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -1056,
+        -688
+      ],
+      "id": "ba757a14-9a42-4043-b91c-0c8cd14ccba7",
+      "name": "MCP Server Trigger",
+      "webhookId": "5cf4b8d7-30b9-49fd-b8f9-4e31929f2c0d",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "CP5u16RVJLUgpM8C",
+          "name": "My MCP Authentication"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "구글스토리지에 저장한 마크다운 파일 객체들을 PDF로 병합해서 E-book을 생성합니다.",
+        "workflowId": {
+          "__rl": true,
+          "value": "Z223w1ZpIbT9Ibim",
+          "mode": "list",
+          "cachedResultName": "Create PDF Book"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "bucketName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('bucketName', `구글스토리지 버킷명`, 'string') }}",
+            "objectNames": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('objectNames', `구글스토리지 마크다운 파일 객체명(들) (복수개의 파일객체명을 comma로 구분해서 전달)\nex) example1.jpg,example2.jpg `, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "bucketName",
+              "displayName": "bucketName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "objectNames",
+              "displayName": "objectNames",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -896,
+        -464
+      ],
+      "id": "e6dc32af-3906-40a3-86b2-186279da9fc9",
+      "name": "Create PDF Book"
+    },
+    {
+      "parameters": {
+        "description": "구글스토리지에 저장된 이미지를 텍스트로 변환하여 마크다운으로 정리하여 다시 구글스토리지에 저장합니다.",
+        "workflowId": {
+          "__rl": true,
+          "value": "c9LYEWqU0D8FG8QO",
+          "mode": "list",
+          "cachedResultName": "Parse Image (Upsage & GCS)"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "bucketName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('bucketName', `구글스토리지 버킷명`, 'string') }}",
+            "objectName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('objectName', `구글스토리지의 이미지 파일객체명`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "objectName",
+              "displayName": "objectName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "bucketName",
+              "displayName": "bucketName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -1056,
+        -464
+      ],
+      "id": "01acc07d-ed6c-4342-966d-49a7e12184e8",
+      "name": "Parse Image"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Create PDF Book": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Image": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0c7f1ce4-1106-4a89-8239-4cb0b0e8c43b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "x5zhgfaHUmGUDky4",
+  "tags": []
+}

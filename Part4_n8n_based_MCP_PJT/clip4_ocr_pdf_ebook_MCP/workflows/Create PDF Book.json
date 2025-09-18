@@ -1,0 +1,281 @@
+{
+  "name": "Create PDF Book",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "objectNames",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -208
+      ],
+      "id": "0e5c1544-fe1f-47e5-8392-f59c82c1a1b1",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "content": "={{ $json.concatenated_data }}",
+        "additionalOptions": {
+          "outputPropertyName": "data"
+        },
+        "markdownOptions": {}
+      },
+      "type": "n8n-nodes-dante-pdf.dantePdf",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -208
+      ],
+      "id": "84ad3e41-9357-4fdc-baa6-3432c87cd2ab",
+      "name": "Dante PDF"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -208
+      ],
+      "id": "a39dad1c-ffa4-4771-b8d4-e592be783997",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "data",
+              "separateBy": "\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        -208
+      ],
+      "id": "479549cd-e949-49e4-9b8e-02308c00dc8b",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1d1e3191-114b-4afb-b67b-96f6bec7e20c",
+              "name": "objectNames",
+              "value": "={{ $json.objectNames.split(\",\") }}",
+              "type": "array"
+            },
+            {
+              "id": "70a8721e-d109-4a09-acd6-271809ba3743",
+              "name": "bucketName",
+              "value": "={{ $json.bucketName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        -208
+      ],
+      "id": "2fecf696-6e45-44b2-a135-eeb92a4f34af",
+      "name": "Text to Array"
+    },
+    {
+      "parameters": {
+        "resource": "object",
+        "operation": "create",
+        "bucketName": "={{ $('Parameters').item.json.bucketName }}",
+        "objectName": "={{ $now.format('yyyyMMddHHmmss') }}.pdf",
+        "createData": {},
+        "createQuery": {},
+        "encryptionHeaders": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.googleCloudStorage",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -208
+      ],
+      "id": "aafb493f-b838-47c7-9107-dc82330c10f3",
+      "name": "Create an object",
+      "credentials": {
+        "googleCloudStorageOAuth2Api": {
+          "id": "H9R1D5j2ATm68V5z",
+          "name": "Google Storage account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "bucketName"
+            },
+            {
+              "name": "objectNames"
+            }
+          ]
+        }
+      },
+      "id": "9d8cb479-12c7-49cc-a87e-e7f63b4650ea",
+      "typeVersion": 1.1,
+      "name": "Parameters",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -688,
+        -208
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "object",
+        "operation": "get",
+        "bucketName": "={{ $json.bucketName }}",
+        "objectName": "={{ $json.objectNames }}",
+        "alt": "media",
+        "getParameters": {},
+        "encryptionHeaders": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.googleCloudStorage",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -208
+      ],
+      "id": "29d4ec01-a1ec-4b0c-8f46-a6cabe80fd92",
+      "name": "Get object",
+      "credentials": {
+        "googleCloudStorageOAuth2Api": {
+          "id": "H9R1D5j2ATm68V5z",
+          "name": "Google Storage account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Parameters": [
+      {
+        "json": {
+          "bucketName": "dante-books",
+          "objectNames": "parsed_page_01.md,parsed_page_02.md,parsed_page_03.md,parsed_page_04.md,parsed_page_05.md,parsed_page_06.md,parsed_page_07.md,parsed_page_08.md,parsed_page_09.md,parsed_page_10.md,parsed_page_11.md,parsed_page_12.md,parsed_page_13.md,parsed_page_14.md,parsed_page_15.md"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Get object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Dante PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text to Array": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dante PDF": {
+      "main": [
+        [
+          {
+            "node": "Create an object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parameters": {
+      "main": [
+        [
+          {
+            "node": "Text to Array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an object": {
+      "main": [
+        []
+      ]
+    },
+    "Get object": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "569c61ae-37f2-4b6e-a56a-e7af2256dfd3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "Z223w1ZpIbT9Ibim",
+  "tags": []
+}

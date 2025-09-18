@@ -1,0 +1,325 @@
+{
+  "name": "Parse Image (Upsage & GCS)",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "object",
+        "operation": "create",
+        "bucketName": "={{ $('Parameters').item.json.bucketName }}",
+        "objectName": "=parsed_{{ $('Parameters').item.json.objectName.split('.')[0] }}.md",
+        "createData": {},
+        "createQuery": {},
+        "encryptionHeaders": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.googleCloudStorage",
+      "typeVersion": 1,
+      "position": [
+        -468,
+        -160
+      ],
+      "id": "221f364a-a379-4a02-a22f-b82bdb0a7518",
+      "name": "Create an object",
+      "credentials": {
+        "googleCloudStorageOAuth2Api": {
+          "id": "H9R1D5j2ATm68V5z",
+          "name": "Google Storage account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "output.newMarkdown",
+        "options": {
+          "encoding": "utf8"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -692,
+        -160
+      ],
+      "id": "35ae4326-1ca9-4310-a73b-b430be336e83",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "resource": "object",
+        "operation": "get",
+        "bucketName": "={{ $json.bucketName }}",
+        "objectName": "={{ $json.objectName }}",
+        "alt": "media",
+        "getParameters": {},
+        "encryptionHeaders": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.googleCloudStorage",
+      "typeVersion": 1,
+      "position": [
+        -1584,
+        -160
+      ],
+      "id": "e682015a-4dbf-49d5-a91a-edee1731de31",
+      "name": "Get object",
+      "credentials": {
+        "googleCloudStorageOAuth2Api": {
+          "id": "H9R1D5j2ATm68V5z",
+          "name": "Google Storage account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "objectName"
+            },
+            {
+              "name": "bucketName"
+            }
+          ]
+        }
+      },
+      "id": "ec9c0f9e-5ddd-474b-97e6-893376183a37",
+      "typeVersion": 1.1,
+      "name": "Parameters",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -1808,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.upstage.ai/v1/document-digitization",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "document-parse"
+            },
+            {
+              "name": "ocr",
+              "value": "auto"
+            },
+            {
+              "name": "chart_recognition",
+              "value": "true"
+            },
+            {
+              "name": "output_formats",
+              "value": "[\"markdown\"]"
+            },
+            {
+              "name": "base64_encoding",
+              "value": "[\"figure\"]"
+            },
+            {
+              "name": "coordinates",
+              "value": "true"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "document",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1360,
+        -160
+      ],
+      "id": "aa80d76d-b2b8-4486-a820-974557eaea9b",
+      "name": "OCR",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "j9sXQdyYiQEHCGYF",
+          "name": "Upstage Bearer Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=당신은 파싱 결과의 누락 및 오류 정보들을 다듬어 완성된 마크다운으로 완성해주는 전문가입니다.\n아래 OCR 결과 마크다운 문서 조각은 OCR로 특정 도서의 1페이지를 텍스트로 변환한 것 결과물입니다.\n변환 과정에서 발생한 불필요한 내용들을 제거하고, 누락된 부분을 맥락에 맞게 채워서,\n본래의 형식을 최대한 유지한 상태에서 잘 정돈된 마크다운 문서로 생성해주세요.\n아래 출력형식에 맞게 생성해주세요.\n\n[출력형식]\n{\n\t\"newMarkdown\": \"....\"\n}\n\n[OCR 결과 마크다운 문서 조각]\n{{ $json.content.markdown }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -1136,
+        -160
+      ],
+      "id": "8875c4a0-6f57-402e-b227-691702956ebe",
+      "name": "Basic LLM Chain",
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"newMarkdown\": \"Markdown String...\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1060,
+        64
+      ],
+      "id": "68edc001-38ff-4840-bbdb-2fdf5e0ff956",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "solar-pro2",
+          "mode": "list",
+          "cachedResultName": "solar-pro2"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1064,
+        272
+      ],
+      "id": "72b198de-5731-4caa-9de3-b5d3e38303e0",
+      "name": "Upstage Solar Pro2",
+      "credentials": {
+        "openAiApi": {
+          "id": "aAJD2xwz5ch8T6Yr",
+          "name": "Upstage credential"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Parameters": [
+      {
+        "json": {
+          "objectName": "img1.jpg",
+          "bucketName": "dante-books"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Get object": {
+      "main": [
+        [
+          {
+            "node": "OCR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an object": {
+      "main": [
+        []
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Create an object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parameters": {
+      "main": [
+        [
+          {
+            "node": "Get object",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OCR": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upstage Solar Pro2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "157867ab-78d8-4302-9737-021108dd933f",
+  "meta": {
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "c9LYEWqU0D8FG8QO",
+  "tags": []
+}

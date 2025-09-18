@@ -1,0 +1,314 @@
+{
+  "name": "RAG Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "안녕하세요! 복띵베이글 상담봇입니다.\n제품문의에 대해 상세하게 알려드릴께요!🙂",
+        "options": {
+          "allowFileUploads": true,
+          "inputPlaceholder": "메세지를 입력하세요.",
+          "showWelcomeScreen": true,
+          "subtitle": "복띵 베이글의 모든것을 물어보세요!",
+          "title": "🍩 복띵베이글 상담봇",
+          "customCss": ":root {\n  /* Colors */\n  --chat--color-primary: #e74266;\n  --chat--color-primary-shade-50: #db4061;\n  --chat--color-primary-shade-100: #cf3c5c;\n  --chat--color-secondary: #20b69e;\n  --chat--color-secondary-shade-50: #1ca08a;\n  --chat--color-white: #ffffff;\n  --chat--color-light: #f2f4f8;\n  --chat--color-light-shade-50: #e6e9f1;\n  --chat--color-light-shade-100: #c2c5cc;\n  --chat--color-medium: #d2d4d9;\n  --chat--color-dark: #101330;\n  --chat--color-disabled: #777980;\n  --chat--color-typing: #404040;\n\n  /* Base Layout */\n  --chat--spacing: 1rem;\n  --chat--border-radius: 0.25rem;\n  --chat--transition-duration: 0.15s;\n  --chat--font-family: (\n    -apple-system,\n    BlinkMacSystemFont,\n    'Segoe UI',\n    Roboto,\n    Oxygen-Sans,\n    Ubuntu,\n    Cantarell,\n    'Helvetica Neue',\n    sans-serif\n  );\n\n  /* Window Dimensions */\n  --chat--window--width: 400px;\n  --chat--window--height: 600px;\n  --chat--window--bottom: var(--chat--spacing);\n  --chat--window--right: var(--chat--spacing);\n  --chat--window--z-index: 9999;\n  --chat--window--border: 1px solid var(--chat--color-light-shade-50);\n  --chat--window--border-radius: var(--chat--border-radius);\n  --chat--window--margin-bottom: var(--chat--spacing);\n\n  /* Header Styles */\n  --chat--header-height: auto;\n  --chat--header--padding: var(--chat--spacing);\n  --chat--header--background: var(--chat--color-dark);\n  --chat--header--color: var(--chat--color-light);\n  --chat--header--border-top: none;\n  --chat--header--border-bottom: none;\n  --chat--header--border-left: none;\n  --chat--header--border-right: none;\n  --chat--heading--font-size: 2em;\n  --chat--subtitle--font-size: inherit;\n  --chat--subtitle--line-height: 1.8;\n\n  /* Message Styles */\n  --chat--message--font-size: 1rem;\n  --chat--message--padding: var(--chat--spacing);\n  --chat--message--border-radius: var(--chat--border-radius);\n  --chat--message-line-height: 1.5;\n  --chat--message--margin-bottom: calc(var(--chat--spacing) * 1);\n  --chat--message--bot--background: var(--chat--color-white);\n  --chat--message--bot--color: var(--chat--color-dark);\n  --chat--message--bot--border: none;\n  --chat--message--user--background: var(--chat--color-secondary);\n  --chat--message--user--color: var(--chat--color-white);\n  --chat--message--user--border: none;\n  --chat--message--pre--background: rgba(0, 0, 0, 0.05);\n  --chat--messages-list--padding: var(--chat--spacing);\n\n  /* Toggle Button */\n  --chat--toggle--size: 64px;\n  --chat--toggle--width: var(--chat--toggle--size);\n  --chat--toggle--height: var(--chat--toggle--size);\n  --chat--toggle--border-radius: 50%;\n  --chat--toggle--background: var(--chat--color-primary);\n  --chat--toggle--hover--background: var(--chat--color-primary-shade-50);\n  --chat--toggle--active--background: var(--chat--color-primary-shade-100);\n  --chat--toggle--color: var(--chat--color-white);\n\n  /* Input Area */\n  --chat--textarea--height: 50px;\n  --chat--textarea--max-height: 30rem;\n  --chat--input--font-size: inherit;\n  --chat--input--border: 0;\n  --chat--input--border-radius: 0;\n  --chat--input--padding: 0.8rem;\n  --chat--input--background: var(--chat--color-white);\n  --chat--input--text-color: initial;\n  --chat--input--line-height: 1.5;\n  --chat--input--placeholder--font-size: var(--chat--input--font-size);\n  --chat--input--border-active: 0;\n  --chat--input--left--panel--width: 2rem;\n\n  /* Button Styles */\n  --chat--button--color: var(--chat--color-light);\n  --chat--button--background: var(--chat--color-primary);\n  --chat--button--padding: calc(var(--chat--spacing) * 1 / 2) var(--chat--spacing);\n  --chat--button--border-radius: var(--chat--border-radius);\n  --chat--button--hover--color: var(--chat--color-light);\n  --chat--button--hover--background: var(--chat--color-primary-shade-50);\n  --chat--close--button--color-hover: var(--chat--color-primary);\n\n  /* Send and File Buttons */\n  --chat--input--send--button--background: var(--chat--color-white);\n  --chat--input--send--button--color: var(--chat--color-light);\n  --chat--input--send--button--background-hover: var(--chat--color-primary-shade-50);\n  --chat--input--send--button--color-hover: var(--chat--color-secondary-shade-50);\n  --chat--input--file--button--background: var(--chat--color-white);\n  --chat--input--file--button--color: var(--chat--color-secondary);\n  --chat--input--file--button--background-hover: var(--chat--input--file--button--background);\n  --chat--input--file--button--color-hover: var(--chat--color-secondary-shade-50);\n  --chat--files-spacing: 0.25rem;\n\n  /* Body and Footer */\n  --chat--body--background: var(--chat--color-light);\n  --chat--footer--background: var(--chat--color-light);\n  --chat--footer--color: var(--chat--color-dark);\n}\n\n\n/* You can override any class styles, too. Right-click inspect in Chat UI to find class to override. */\n.chat-message {\n\tmax-width: 50%;\n}\n\n.chat-get-started-footer {\n  visibility: hidden;\n}",
+          "responseMode": "lastNode"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        672
+      ],
+      "id": "107dad7c-e6c5-4144-aa73-15aa46067856",
+      "name": "When chat message received",
+      "webhookId": "7add635d-b495-453a-8da5-ad62a7040ff9"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# 역할 및 개요\n당신은 데일리밀 '복띵' 건강 베이글 브랜드만을 위한 전문 AI 상담 도우미입니다. 당신의 유일한 임무는, 브랜드 공식 및 내부 문서에서만 찾을 수 있는 최신·정확한 정보만을 활용해, 사용자에게 신뢰할 수 있는 답을 제공하는 것입니다. 사적인 견해나 추측 없이, 오직 가이드/매뉴얼/FAQ/운영·제품 문서 등에서 근거를 추출해 설명합니다. \n\n# 목표\n당신의 궁극적 목표는, 제공된 복띵 관련 매뉴얼 및 브랜드 공식 문서에서 **명확히 근거가 확인되는 정보만을 근거로** 사용자 질의에 정확하게 답변하는 것입니다. \n\n# 지침\n당신은 RAG(Retrieval-Augmented Generation) 기반으로 동작합니다. \n사용자 질문이 들어오면, Think 도구를 통해서 작업을 수행하기 전 과 도중에 검색어, 사용한 검색 도구, 검색결과의 적절성, 그 다음 행동에 대한 생각을 합니다.\n그에 맞춰서 복띵 내부/공식 문서의 벡터 데이터베이스(Search Documents)에서 적합한 내용을 검색(조회)하여, 아래 규칙을 반드시 따릅니다.\n문서 검색을 하고 답변을 찾지 못한 경우 웹 검색 도구를 사용해서 적절한 내용이 나올때까지 2-3차례 검색을 진행을 더 할수 있습니다.\n\n- 단일 진실의 원칙:\n  답변은 무조건 제공된 복띵 문서 정보만에서 도출되어야 하며,\n  문서에 근거 없는 추가 설명·해석·추천·추측은 금지합니다.\n\n- 정확성 및 암시적 인용:\n  문서의 내용을 가감 없이 최대한 \"있는 그대로\" 쓰되,\n  정보를 더 명확하게 다듬어 명료하게 전달합니다.\n  단, 문서를 벗어난 사견/지식/예시는 절대 포함하면 안 됩니다.\n  본인은 복띵 브랜드 공식 문서만 아는 전문가처럼 행동합니다.\n\n- 툴 및 RAG 언급 금지:\n  툴이나 데이터 검색 과정, RAG 시스템임을 설명하거나 언급하지 않습니다.\n  오직 공식 상담원처럼 행동하고, 브랜드 신뢰성만 강조하세요.\n\n- 명확성:\n  간결하고, 핵심만을 바로 설명합니다.\n\n- 구조화:\n  문서에 단계, 절차, 목록, 예시, 표, 안내 메시지가 있으면\n  불릿/순서 목록 · 간결 문단 · 마크다운 표 · 코드 블록 등\n  Markdown 형식으로 보기 좋게 정돈합니다.\n\n- 어조:\n  신뢰감 있고 전문적이며, 친절하게 답변합니다.\n  불확실하거나, 문서에 없는 정보는 \"공식 문서에 근거 정보가 확인되지 않습니다.\"\n  처럼 단호하게 안내합니다.\n\n# 사용가능한 도구\n- Search Documents : 질문과 유관한 저장된 문서를 조회합니다.\n- Search Web : 웹검색엔진을 사용해서 웹문서를 검색합니다.\n- Think : 검색어, 사용한 검색 도구, 검색결과의 적절성, 그 다음 행동에 대한 생각을 합니다."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        672
+      ],
+      "id": "dba55702-1b72-491f-82f1-1f3c99eb8ef0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        928
+      ],
+      "id": "aab7b89c-c6bc-444d-96b4-3fc1affb00e1",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZEa0FOrXM9016Vdd",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        928
+      ],
+      "id": "b211eee6-0c02-493a-ab02-ee01009f2093",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        752,
+        928
+      ],
+      "id": "c3351f5a-ae13-4764-aa63-f6fa5beaac23",
+      "name": "Search Web",
+      "credentials": {
+        "serpApi": {
+          "id": "J4xugzixE4qVJ5lk",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "사용자의 요청을 잘 처리하기 위해서, 적절한 검색어를 고민하고, 각 도구를 사용후 사용자의 요청에 적합한지 판단하고 그 다음 행동을 결정할때 사용합니다.\n생각한 내용을 컨텍스트 메모리에 추가해줄뿐 다른 동작은 하지 않습니다."
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        928
+      ],
+      "id": "86215426-518f-457b-b5e7-cc99e6ab4263",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use RAG to look up information in the knowledgebase.",
+        "tableName": "=document_records",
+        "topK": 25,
+        "useReranker": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        928
+      ],
+      "id": "1825e244-cca3-44ef-85c9-ea4d91af5bfd",
+      "name": "Retrieve Records",
+      "credentials": {
+        "postgres": {
+          "id": "lN2fZ27xETHNgKRa",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        336,
+        1104
+      ],
+      "id": "86795c45-91f7-4f23-a195-be0fefa3087e",
+      "name": "Embeddings",
+      "credentials": {
+        "openAiApi": {
+          "id": "drLx0rcWm5iXttc5",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topN": 4
+      },
+      "type": "@n8n/n8n-nodes-langchain.rerankerCohere",
+      "typeVersion": 1,
+      "position": [
+        512,
+        1104
+      ],
+      "id": "3aee2f85-1d98-4746-b38a-a8ca067b53c8",
+      "name": "Reranker",
+      "credentials": {
+        "cohereApi": {
+          "id": "3ow2gYF1XhPMi1Rl",
+          "name": "CohereApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "chatbot",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        1264
+      ],
+      "id": "8ad7d841-76a7-4008-b705-bad170a20098",
+      "name": "Webhook",
+      "webhookId": "4224c4d7-bdb4-462f-b60e-517412a3bb6c"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>n8n 챗봇 임베드 테스트</title>\n    <style>\n        /* 페이지 기본 스타일 (가상 랜딩페이지) */\n        body {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            padding: 40px;\n            background-color: #f4f7f6;\n            color: #333;\n            height: 200vh; /* 페이지가 길다는 것을 보여주기 위한 스크롤 생성 */\n        }\n        h1 {\n            color: #003366;\n        }\n        p {\n            line-height: 1.6;\n        }\n\n        /* --- 챗봇 위젯 스타일 --- */\n\n        /* 플로팅 버튼 (챗봇 토글) */\n        #chat-toggle-button {\n            position: fixed;\n            bottom: 20px;\n            right: 20px;\n            width: 60px;\n            height: 60px;\n            background-color: #007bff; /* 원하는 색상으로 변경하세요 */\n            color: white;\n            border: none;\n            border-radius: 50%;\n            font-size: 28px;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            cursor: pointer;\n            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);\n            transition: transform 0.2s ease-in-out;\n            z-index: 9998;\n        }\n\n        #chat-toggle-button:hover {\n            transform: scale(1.1);\n        }\n\n        /* 챗봇 컨테이너 */\n        #chat-widget-container {\n            position: fixed;\n            bottom: 90px; /* 버튼 높이 + 여백 */\n            right: 20px;\n            width: 370px;\n            height: 600px;\n            background-color: white;\n            border-radius: 15px;\n            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);\n            overflow: hidden; /* 내부 iframe이 둥근 모서리를 넘지 않도록 */\n            z-index: 9999;\n            \n            /* 초기 상태 (숨김) */\n            opacity: 0;\n            transform: translateY(20px);\n            pointer-events: none; /* 숨겨져 있을 때 클릭 방지 */\n            transition: opacity 0.3s ease-out, transform 0.3s ease-out;\n        }\n\n        /* 챗봇 컨테이너가 보일 때의 스타일 */\n        #chat-widget-container.visible {\n            opacity: 1;\n            transform: translateY(0);\n            pointer-events: auto; /* 보일 때 다시 클릭 가능하도록 */\n        }\n\n        /* n8n 챗봇 iframe */\n        #n8n-chat-iframe {\n            width: 100%;\n            height: 100%;\n            border: none;\n        }\n    </style>\n</head>\n<body>\n\n    <h1>가상의 랜딩 페이지입니다</h1>\n    <p>이 페이지는 n8n 챗봇을 임베드하는 방법을 보여주기 위한 예시입니다.</p>\n    <p>페이지 우측 하단의 파란색 동그라미 버튼을 클릭하여 챗봇과 대화를 시작하세요.</p>\n    <br>\n    <p>페이지를 스크롤해도 버튼과 채팅창은 항상 같은 위치에 고정됩니다.</p>\n\n    <div id=\"chat-widget-container\">\n        <iframe id=\"n8n-chat-iframe\" src=\"\" title=\"n8n Chat\"></iframe>\n    </div>\n\n    <button id=\"chat-toggle-button\" aria-label=\"채팅 열기\">\n        💬\n    </button>\n    \n    <script>\n        // DOM 요소가 모두 로드된 후에 스크립트를 실행합니다.\n        document.addEventListener('DOMContentLoaded', () => {\n\n            // 필요한 요소들을 가져옵니다.\n            const chatToggleButton = document.getElementById('chat-toggle-button');\n            const chatWidgetContainer = document.getElementById('chat-widget-container');\n            const n8nIframe = document.getElementById('n8n-chat-iframe');\n\n            // n8n Webhook URL을 변수에 저장합니다.\n            const n8nWebhookUrl = 'http://localhost:5678/webhook/4224c4d7-bdb4-462f-b60e-517412a3bb6c';\n\n            // iframe이 로드되었는지 확인하는 플래그\n            let isChatLoaded = false;\n            let isRecursionDetected = false;\n\n            // === 방어 로직 1: 재귀 로딩 감지 및 방지 ===\n            function detectRecursion() {\n                // 현재 페이지가 iframe 내부에서 로드되고 있는지 확인\n                if (window !== window.top) {\n                    console.warn('🚨 재귀 로딩 감지: iframe 내부에서 실행 중');\n                    isRecursionDetected = true;\n                    \n                    // iframe 내부에서는 챗봇 기능 완전 비활성화\n                    chatToggleButton.style.display = 'none';\n                    chatWidgetContainer.style.display = 'none';\n                    \n                    // 모든 iframe 요소 비활성화\n                    const allIframes = document.querySelectorAll('iframe');\n                    allIframes.forEach(iframe => {\n                        iframe.style.display = 'none';\n                        iframe.src = 'about:blank';\n                    });\n                    \n                    // 페이지 상단에 경고 메시지 표시\n                    const warningDiv = document.createElement('div');\n                    warningDiv.style.cssText = `\n                        position: fixed;\n                        top: 0;\n                        left: 0;\n                        right: 0;\n                        background: #ff4444;\n                        color: white;\n                        padding: 10px;\n                        text-align: center;\n                        z-index: 10000;\n                        font-weight: bold;\n                    `;\n                    warningDiv.textContent = '⚠️ 재귀 로딩 감지됨 - 챗봇 기능이 비활성화되었습니다';\n                    document.body.insertBefore(warningDiv, document.body.firstChild);\n                    \n                    // 추가 안전장치: 모든 클릭 이벤트 차단\n                    document.addEventListener('click', (e) => {\n                        e.preventDefault();\n                        e.stopPropagation();\n                        console.warn('재귀 감지로 인해 클릭 차단');\n                    }, true);\n                    \n                    return true;\n                }\n                return false;\n            }\n\n            // === 방어 로직 2: URL 검증 ===\n            function validateWebhookUrl() {\n                const currentUrl = window.location.href;\n                \n                // 재귀 로딩 방지: webhook URL이 현재 페이지 URL을 포함하는지 확인\n                if (n8nWebhookUrl.includes(currentUrl) || currentUrl.includes(n8nWebhookUrl)) {\n                    console.error('🚨 URL 검증 실패: 재귀 로딩 위험');\n                    isRecursionDetected = true;\n                    return false;\n                }\n                \n                // webhook URL 형식 검증\n                if (!n8nWebhookUrl.startsWith('https://') || !n8nWebhookUrl.includes('/webhook/')) {\n                    console.error('🚨 잘못된 webhook URL 형식');\n                    return false;\n                }\n                \n                return true;\n            }\n\n            // === 방어 로직 3: iframe 로드 오류 처리 ===\n            function setupIframeErrorHandling() {\n                n8nIframe.addEventListener('error', (e) => {\n                    console.error('🚨 iframe 로드 오류:', e);\n                    showErrorMessage('챗봇을 로드할 수 없습니다. 잠시 후 다시 시도해주세요.');\n                });\n\n                n8nIframe.addEventListener('load', () => {\n                    // iframe 로드 후에도 재귀 확인\n                    setTimeout(() => {\n                        try {\n                            const iframeDoc = n8nIframe.contentDocument || n8nIframe.contentWindow.document;\n                            if (iframeDoc && iframeDoc.location.href === window.location.href) {\n                                console.error('🚨 iframe 재귀 로딩 감지');\n                                showErrorMessage('챗봇 URL이 잘못되었습니다. 관리자에게 문의하세요.');\n                                n8nIframe.src = 'about:blank';\n                            }\n                        } catch (e) {\n                            // Cross-origin 제한으로 인한 오류는 무시\n                            console.log('iframe 내용 확인 불가 (정상적인 경우)');\n                        }\n                    }, 1000);\n                });\n            }\n\n            // === 방어 로직 4: 오류 메시지 표시 ===\n            function showErrorMessage(message) {\n                const errorDiv = document.createElement('div');\n                errorDiv.style.cssText = `\n                    position: fixed;\n                    top: 50%;\n                    left: 50%;\n                    transform: translate(-50%, -50%);\n                    background: #ff4444;\n                    color: white;\n                    padding: 20px;\n                    border-radius: 10px;\n                    z-index: 10001;\n                    text-align: center;\n                    max-width: 300px;\n                `;\n                errorDiv.innerHTML = `\n                    <h3>⚠️ 오류</h3>\n                    <p>${message}</p>\n                    <button onclick=\"this.parentElement.remove()\" style=\"\n                        background: white;\n                        color: #ff4444;\n                        border: none;\n                        padding: 8px 16px;\n                        border-radius: 5px;\n                        cursor: pointer;\n                        margin-top: 10px;\n                    \">확인</button>\n                `;\n                document.body.appendChild(errorDiv);\n            }\n\n            // === 방어 로직 5: 안전한 iframe 로드 ===\n            function safeLoadIframe() {\n                if (isRecursionDetected) {\n                    console.warn('재귀 감지로 인해 iframe 로드 중단');\n                    return false;\n                }\n\n                if (!validateWebhookUrl()) {\n                    showErrorMessage('챗봇 URL이 올바르지 않습니다.');\n                    return false;\n                }\n\n                try {\n                    n8nIframe.src = n8nWebhookUrl;\n                    isChatLoaded = true;\n                    console.log('✅ iframe 안전하게 로드됨');\n                    return true;\n                } catch (e) {\n                    console.error('🚨 iframe 로드 실패:', e);\n                    showErrorMessage('챗봇을 로드하는 중 오류가 발생했습니다.');\n                    return false;\n                }\n            }\n\n            // === 초기화 및 방어 로직 실행 ===\n            if (detectRecursion()) {\n                // 재귀 감지 시 추가 작업 중단\n                return;\n            }\n\n            // iframe 오류 처리 설정\n            setupIframeErrorHandling();\n\n            // 플로팅 버튼 클릭 이벤트 처리 (방어 로직 포함)\n            chatToggleButton.addEventListener('click', () => {\n                // 재귀 감지 시 클릭 무시\n                if (isRecursionDetected) {\n                    console.warn('재귀 감지로 인해 클릭 무시');\n                    return;\n                }\n\n                // 처음 버튼을 클릭했을 때만 iframe의 src를 설정합니다. (성능 최적화)\n                if (!isChatLoaded) {\n                    if (!safeLoadIframe()) {\n                        return; // 로드 실패 시 토글하지 않음\n                    }\n                }\n                \n                // 'visible' 클래스를 토글하여 채팅창을 보여주거나 숨깁니다.\n                chatWidgetContainer.classList.toggle('visible');\n            });\n\n            // === 추가 안전장치: 페이지 언로드 시 정리 ===\n            window.addEventListener('beforeunload', () => {\n                if (n8nIframe.src && n8nIframe.src !== 'about:blank') {\n                    n8nIframe.src = 'about:blank';\n                }\n            });\n\n        });\n    </script>\n\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        128,
+        1264
+      ],
+      "id": "62f3c508-290e-425f-b093-995aabef2ca2",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Web": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Records": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Retrieve Records",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reranker": {
+      "ai_reranker": [
+        [
+          {
+            "node": "Retrieve Records",
+            "type": "ai_reranker",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d8f26c24-66e9-42c4-bfae-783ca504e916",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3fdaaf60e2c627d3c0a8ba075e3815e24ea9d8307dd24a904e5c8d8daa0cf76"
+  },
+  "id": "ZmW2xgIvL003zzgp",
+  "tags": []
+}
