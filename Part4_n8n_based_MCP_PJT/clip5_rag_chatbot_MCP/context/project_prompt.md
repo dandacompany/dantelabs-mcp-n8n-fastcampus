@@ -18,9 +18,9 @@
    - Save Document : 문서를 DB에 저장하는 도구.
    - Retrieve Records : RAG를 위한 문서 검색 도구.
 2) DesktopCommander
-   - 업로드: gsutil cp [내_파일경로] gs://dante-docs/[대상경로] 명령어로 파일을 업로드합니다.
-   - 삭제: gsutil rm gs://dante-docs/[대상경로] 명령어로 파일을 삭제합니다.
-   - 모든 파일 업로드 및 삭제 작업에서 버킷명은 'dante-docs'를 사용합니다.
+   - 업로드: gcloud storage cp [내_파일경로] gs://dante-docs/[대상경로] 명령어로 파일을 업로드합니다.
+   - 삭제: gcloud storage rm gs://dante-docs/[대상경로] 명령어로 파일을 삭제합니다.
+  
 
 ## 상세지침
 1) 공통
@@ -31,8 +31,8 @@
    - 주요 변수명
      - 문서 메타정보 테이블명 : document_metadata
      - 문서 청크 레코드 테이블명: document_records
-     - 구글스토리지 버킷명 : dante-docs
-     - 임시 다운로드 폴더 : /users/dante/downloads
+     - 구글스토리지 버킷명 : dante-docs <-- 변경하세요
+     - 임시 다운로드 폴더 : /users/dante/downloads <-- 변경하세요
 2) DB 설계
    - 사용자가 문서질의를 요청하면 해당 질의에 응답할수 있는 DB 테이블이 준비되었는지 확인한다. (List Tables)
    - 사용자가 RAG를 위해 문서를 저장하려고 할때, 문서 저장용 메타정보 테이블과 문서 청크 레코드 저장용 테이블이 생성되어 있는지 스키마 정보와 함께 확인한다. 없으면 테이블을 먼저 생성한다.  
